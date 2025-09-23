@@ -12,7 +12,7 @@ export default async function dbConnect() : Promise<void> {
     if (connection.isConnected) {
         console.log("databse is already connected");
         return 
-    }
+    }  
 
     try {
         const dbConnection = await connect(`${process.env.MONGO_URI}`);
