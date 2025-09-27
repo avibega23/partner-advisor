@@ -61,12 +61,12 @@ function Input<K extends keyof UserInput>({ data, value, onChange }: InputProps<
             case "adventurous":
                 return <input type="number" placeholder="Enter a number" className="w-full border p-2 rounded bg-gray-50 text-gray-800" value={value as number || ''} onChange={(e) => onChange((e.target.value === '' ? 0 : parseInt(e.target.value, 10)) as UserInput[K])}/>;
             case "coreValues":
-                return <div className="flex flex-col gap-2">{data.option.map((opt, i) => (<label key={i} className="flex items-center gap-2 cursor-pointer"><input type="checkbox" name={data.inputTitle} value={opt} checked={(value as string[]).includes(opt)} onChange={() => handleCheckboxChange(opt)} className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"/>{opt}</label>))}</div>;
+                return <div className="flex flex-col gap-2">{data.option.map((opt, i) => (<label key={i} className="flex items-center text-gray-800 gap-2 cursor-pointer"><input type="checkbox" name={data.inputTitle} value={opt} checked={(value as string[]).includes(opt)} onChange={() => handleCheckboxChange(opt)} className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"/>{opt}</label>))}</div>;
             case "birdOrOwl":
-                 return <div className="flex flex-col gap-2">{data.option.map((opt, i) => (<label key={i} className="flex items-center gap-2 cursor-pointer"><input type="radio" name={data.inputTitle} value={opt} checked={(value as boolean) === (opt === 'Night Owl')} onChange={() => onChange((opt === 'Night Owl') as UserInput[K])}/>{opt}</label>))}</div>;
+                 return <div className="flex flex-col gap-2">{data.option.map((opt, i) => (<label key={i} className="flex items-center  cursor-pointer"><input type="radio" name={data.inputTitle} value={opt} checked={(value as boolean) === (opt === 'Night Owl')} onChange={() => onChange((opt === 'Night Owl') as UserInput[K])}/>{opt}</label>))}</div>;
             default:
                 if (data.inputType) { return <input type="text" placeholder="Enter your answer" className="w-full border p-2 rounded bg-gray-50 text-gray-800" value={value as string} onChange={(e) => onChange(e.target.value as UserInput[K])}/>; }
-                return <div className="flex flex-col gap-2">{data.option.map((opt, i) => (<label key={i} className="flex items-center gap-2 cursor-pointer"><input type="radio" name={data.inputTitle} value={opt} checked={value === opt} onChange={() => onChange(opt as UserInput[K])}/>{opt}</label>))}</div>;
+                return <div className="flex flex-col gap-2">{data.option.map((opt, i) => (<label key={i} className="flex  text-gray-800 items-center gap-2 cursor-pointer"><input type="radio" name={data.inputTitle} value={opt} checked={value === opt} onChange={() => onChange(opt as UserInput[K])}/>{opt}</label>))}</div>;
         }
     }
   return (
@@ -136,9 +136,13 @@ export default function Page() {
           }
           console.log('Form submitted successfully:', result.data);
           setIsSubmitted(true);
-      } catch (err: any) {
+      } catch (err: unknown) {
           console.error('Submission failed:', err);
-          setError(err.message);
+          if (err instanceof Error) {
+              setError(err.message);
+          } else {
+              setError('An unexpected error occurred');
+          }
       } finally {
           setIsSubmitting(false);
       }

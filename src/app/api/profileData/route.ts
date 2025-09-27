@@ -13,10 +13,12 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: false, error: 'Email is required.' }, { status: 400 });
     }
 
-    const newUser = new User(data);
-    await newUser.save();
+    const user = await User.findOneAndUpdate({email : data.email},{
+      ...data
+    });
+    await user.save();
 
-    return NextResponse.json({ success: true, data: newUser }, { status: 201 });
+    return NextResponse.json({ success: true, data: user }, { status: 201 });
   } catch (error) {
     console.error('API Error:', error);
 
