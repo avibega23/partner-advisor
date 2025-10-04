@@ -1,14 +1,14 @@
 'use client'; // This component must be a Client Component to use hooks
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, FormEvent } from 'react';
 // You'll need an icon for the submit button (e.g., from lucide-react or react-icons)
 import { SendHorizonal } from 'lucide-react'; 
 
 // --- Component Definition ---
 
-export default function ChatInput({ currentConversationId, onSubmit }) {
+export default function ChatInput({ onSubmit } : {onSubmit : (message : string) => void}) {
   const [inputText, setInputText] = useState('');
-  const textareaRef = useRef(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   // Auto-resize the textarea based on content
   const autoResize = () => {
@@ -26,7 +26,7 @@ export default function ChatInput({ currentConversationId, onSubmit }) {
   }, [inputText]);
 
   // Handle the form submission (either by button click or Enter key)
-  const handleSubmit = (e) => {
+  const handleSubmit = (e : FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const message = inputText.trim();
 
@@ -39,13 +39,7 @@ export default function ChatInput({ currentConversationId, onSubmit }) {
     setInputText('');
   };
 
-  // Handle keydown for Enter to submit, Shift+Enter for new line
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); // Prevent default new line behavior
-      handleSubmit(e);    // Trigger submission
-    }
-  };
+  
 
   return (
     <div className="w-full flex justify-center sticky bottom-0 z-10 p-4 bg-white shadow-xl border-t border-gray-200">
@@ -55,7 +49,6 @@ export default function ChatInput({ currentConversationId, onSubmit }) {
           ref={textareaRef}
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={handleKeyDown}
           className="flex-grow resize-none p-2 text-base text-gray-800 bg-transparent focus:outline-none placeholder-gray-500"
           placeholder="Ask for advice..."
           rows={1}

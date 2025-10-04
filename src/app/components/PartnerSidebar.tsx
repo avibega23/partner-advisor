@@ -14,18 +14,17 @@ const mockPartners = [
 /**
  * Sidebar component displaying the logo, partner list, and action buttons.
  */
-export default function PartnerSidebar({ activePartnerId }) {
+export default function PartnerSidebar({ activePartnerId } : {activePartnerId : string}) {
   const router = useRouter();
 
   // 1. Function to handle switching between partners
-  const handlePartnerSelect = (partnerId) => {
+  const handlePartnerSelect = (partnerId : string) => {
     // Navigate to the dynamic chat route for the selected partner
     router.push(`/chat/${partnerId}`);
   };
 
   // 2. Function to handle creating a new partner profile
   const handleNewProfile = () => {
-    // Navigate to a dedicated form page
     router.push('/profiles/new'); 
   };
   

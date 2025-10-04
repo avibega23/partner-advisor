@@ -1,13 +1,13 @@
-// This would be the main page in Next.js App Router structure
+
 "use client"
-import PartnerSidebar from '../../components/PartnerSidebar';
-import ConversationView from '../../components/ConversationView';
-import ChatInput from '../../components/ChatInput'; 
+import PartnerSidebar from '@/app/components/PartnerSidebar';
+import ConversationView from '@/app/components/ConversationView';
+import ChatInput from '@/app/components/ChatInput'; 
 import React,{useState} from 'react';
 
-export default function Page({ params } : {params : {partnerId : string}}) {
-  const activePartnerId = params.partnerId;
-
+export default function Page({ params } : {params : {activePartnerId : string}}) {
+  const activePartnerId = params.activePartnerId;
+    console.log(activePartnerId);
   // --- Mock Data State (Replace with actual state management/data fetching) ---
   const [messages, setMessages] = useState(/* fetch messages for activePartnerId */ []);
   const currentPartner = {name : "user1"};
