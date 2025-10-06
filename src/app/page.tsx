@@ -21,8 +21,8 @@
 
     if (isLoading) {
       return (
-          <div className="flex items-center justify-center h-screen bg-gray-50 font-sans">
-            <div className="text-lg font-semibold text-gray-600 flex items-center">
+          <div className="flex items-center justify-center h-screen bg-black-100 font-sans">
+            <div className="text-lg font-semibold text-white flex items-center">
               <svg
                 className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600"
                 xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +50,7 @@
     }
 
     return (
-        <main className="flex items-center justify-center h-screen bg-gray-100 font-sans">
+        <main className="flex items-center justify-center h-screen bg-black-100 font-sans">
           <div className="text-center p-10 bg-white rounded-xl shadow-lg max-w-md w-full">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">
               Welcome to Partner Advisor

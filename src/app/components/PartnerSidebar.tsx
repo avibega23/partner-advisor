@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { PlusCircle, LogOut } from 'lucide-react'; // Icons
+import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs';
 
 // --- Mock Data Structure (Replace with actual data fetch) ---
 const mockPartners = [
@@ -29,11 +30,6 @@ export default function PartnerSidebar({ activePartnerId } : {activePartnerId : 
   };
   
   // 3. Function to handle user logout
-  const handleLogout = () => {
-    // Implement your actual logout logic here (e.g., clearing tokens/cookies)
-    console.log('User logged out.');
-    router.push('/login'); // Redirect to login page
-  };
 
   return (
     <div className="flex flex-col w-72 h-screen border-r border-gray-200 bg-gray-50">
@@ -77,13 +73,11 @@ export default function PartnerSidebar({ activePartnerId } : {activePartnerId : 
 
       {/* --- Logout Button --- */}
       <div className="p-4 border-t border-gray-200">
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center justify-center p-3 text-sm font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
-        >
-          <LogOut size={18} className="mr-2" />
-          Logout
-        </button>
+          
+          <LogoutLink className='w-full flex items-center justify-center p-3 text-sm font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors'>
+            <LogOut size={18} className="mr-2" />
+            Logout
+          </LogoutLink>
       </div>
     </div>
   );

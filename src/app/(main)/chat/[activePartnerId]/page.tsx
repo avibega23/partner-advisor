@@ -10,7 +10,7 @@ export default function Page({ params } : {params : {activePartnerId : string}})
     console.log(activePartnerId);
   // --- Mock Data State (Replace with actual state management/data fetching) ---
   const [messages, setMessages] = useState(/* fetch messages for activePartnerId */ []);
-  const currentPartner = {name : "user1"};
+  const currentPartner = {name : "avibega"};
 
   // Function to handle the submit action from ChatInput
   const handleChatSubmit = (messageText : string) => {
@@ -43,6 +43,7 @@ export default function Page({ params } : {params : {activePartnerId : string}})
         <footer className="w-full">
           <ChatInput 
             onSubmit={handleChatSubmit}
+            
           />
         </footer>
       </div>

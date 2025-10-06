@@ -32,6 +32,7 @@ export async function GET() {
                 kindeId : user.id,
                 
             })
+            return NextResponse.redirect(new URL('/profileintroduce', baseUrl));
           
         }
 

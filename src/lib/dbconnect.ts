@@ -15,7 +15,7 @@ export default async function dbConnect() : Promise<void> {
     }  
 
     try {
-        const dbConnection = await connect(`${process.env.MONGO_URI}`);
+        const dbConnection = await connect(`${process.env.MONGO_URL}`);
 
 
         connection.isConnected = dbConnection.connections[0].readyState;
@@ -24,7 +24,7 @@ export default async function dbConnect() : Promise<void> {
 
 
     } catch (error) {
-        console.log("errro while connecting to the database: ", error);
+        console.log("error while connecting to the database: ", error);
         process.exit(1);
     }
 

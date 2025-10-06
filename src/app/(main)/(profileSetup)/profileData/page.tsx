@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { useRouter } from "next/navigation";
 
 // --- TYPE DEFINITIONS (No changes) ---
 interface UserInput {
@@ -23,10 +24,9 @@ interface Question {
   key: keyof UserInput;
   inputTitle: string;
   inputType: boolean;
-  option: string[];
+  option?: string[];
 }
 
-// --- QUESTIONS DATA (No changes) ---
 const questions: Question[] = [
   {
     key: "gender",
@@ -40,12 +40,11 @@ const questions: Question[] = [
     inputType: false,
     option: ["Yes", "No"],
   },
-  { key: "age", inputTitle: "How Old Are You?", inputType: true, option: [] },
+  { key: "age", inputTitle: "How Old Are You?", inputType: true },
   {
     key: "adventurous",
     inputTitle: "On a scale of 1 to 10, how adventurous are you?",
     inputType: true,
-    option: [],
   },
   {
     key: "coreValues",
@@ -63,7 +62,6 @@ const questions: Question[] = [
     key: "stressHandling",
     inputTitle: "How Do You Handle Your Stress?",
     inputType: true,
-    option: [],
   },
   {
     key: "communicationStyle",
@@ -75,17 +73,14 @@ const questions: Question[] = [
     key: "closeFriendDescribe",
     inputTitle: "What type of behavior do you expect from your friend?",
     inputType: true,
-    option: [],
   },
   {
     key: "freeTimeSpend",
     inputTitle: "How Do You Spend Your Free Time?",
     inputType: true,
-    option: [],
   },
 ];
 
-// --- GENERIC INPUT COMPONENT (No changes) ---
 interface InputProps<K extends keyof UserInput> {
   data: Question;
   value: UserInput[K];
@@ -104,9 +99,28 @@ function Input<K extends keyof UserInput>({
       : [...currentValue, option];
     onChange(newValues as UserInput[K]);
   };
+
   const renderInput = () => {
     switch (data.key) {
       case "age":
+        return (
+          <input
+            min={1}
+            max={100}
+            type="number"
+            placeholder="Enter a number"
+            className="w-full border p-2 rounded bg-gray-50 text-gray-800"
+            value={(value as number) || ""}
+            onChange={(e) => {
+              const val =
+                e.target.value === ""
+                  ? 0
+                  : Math.max(1, Math.min(100, parseInt(e.target.value, 10)));
+
+              onChange(val as UserInput[K]);
+            }}
+          />
+        );
       case "adventurous":
         return (
           <input
@@ -117,19 +131,19 @@ function Input<K extends keyof UserInput>({
             className="w-full border p-2 rounded bg-gray-50 text-gray-800"
             value={(value as number) || ""}
             onChange={(e) => {
-              
-              const val = e.target.value === "" ? 0 : Math.max(1,Math.min(10,parseInt(e.target.value,10)));
+              const val =
+                e.target.value === ""
+                  ? 0
+                  : Math.max(1, Math.min(10, parseInt(e.target.value, 10)));
 
-              onChange(
-                 val as UserInput[K]
-              );
+              onChange(val as UserInput[K]);
             }}
           />
         );
       case "coreValues":
         return (
           <div className="flex flex-col gap-2">
-            {data.option.map((opt, i) => (
+            {data.option?.map((opt, i) => (
               <label
                 key={i}
                 className="flex items-center text-gray-800 gap-2 cursor-pointer"
@@ -149,8 +163,8 @@ function Input<K extends keyof UserInput>({
         );
       case "birdOrOwl":
         return (
-          <div className="flex flex-col gap-2">
-            {data.option.map((opt, i) => (
+          <div className="flex flex-col gap-2 text-black">
+            {data.option?.map((opt, i) => (
               <label key={i} className="flex items-center  cursor-pointer">
                 <input
                   type="radio"
@@ -180,7 +194,7 @@ function Input<K extends keyof UserInput>({
         }
         return (
           <div className="flex flex-col gap-2">
-            {data.option.map((opt, i) => (
+            {data.option?.map((opt, i) => (
               <label
                 key={i}
                 className="flex  text-gray-800 items-center gap-2 cursor-pointer"
@@ -215,7 +229,7 @@ export default function Page() {
   const [index, setIndex] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const router = useRouter();
 
   // Use the mock Kinde hook
   const { user, isLoading } = useKindeBrowserClient();
@@ -256,7 +270,6 @@ export default function Page() {
   };
 
   const handleSubmit = async () => {
-    setIsSubmitting(true);
     setError(null);
     try {
       const response = await fetch("./../../api/profileData", {
@@ -269,8 +282,7 @@ export default function Page() {
       if (!response.ok) {
         throw new Error(result.error || "Something went wrong");
       }
-      console.log("Form submitted successfully:", result.data);
-      setIsSubmitted(true);
+      router.push("/dashboard");
     } catch (err: unknown) {
       console.error("Submission failed:", err);
       if (err instanceof Error) {
@@ -284,12 +296,20 @@ export default function Page() {
   };
 
   const nextQuestion = () => {
-
     const currentKey = questions[index].key;
     const val = formData[currentKey];
 
-    if ( (currentKey === "age" || currentKey === "adventurous") &&
-    (!val || ((val as number) < 1) || (val as number) > 10)) {
+    if (
+      (currentKey === "adventurous") &&
+      (!val || (val as number) < 1 || (val as number) > 10)
+    ) {
+      setError("please enter a number between 1 and 10");
+      return;
+    }
+     if (
+      (currentKey === "age" ) &&
+      (!val || (val as number) < 1 || (val as number) > 100)
+    ) {
       setError("please enter a number between 1 and 10");
       return;
     }
@@ -300,7 +320,6 @@ export default function Page() {
     }
 
     setError(null);
-
 
     if (index < questions.length - 1) {
       setIndex(index + 1);
@@ -324,19 +343,6 @@ export default function Page() {
   }
 
   const currentQuestion = questions[index];
-
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-        <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md text-center">
-          <h2 className="text-2xl font-bold text-green-600 mb-4">Success!</h2>
-          <p className="text-gray-700">
-            Your information has been saved successfully.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
