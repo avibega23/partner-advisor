@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, data: user }, { status: 201 });
   } catch (error) {
-    console.error('API Error:', error);
+    console.error('USERCREATION::ERROR:: !!!', error);
 
     // We now check the type of 'error' before using its properties.
     if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
