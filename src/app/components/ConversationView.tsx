@@ -9,7 +9,7 @@ import ChatMessage from './ChatMessage'; // Import your message display componen
  * * @param {object} props - The component props.
  * @param {Array<object>} props.messages - An array of message objects (IMessage).
  */
-export default function ConversationView({ messages }) {
+export default function ConversationView({messages}) {
   // 1. Ref to target the end of the message list for scrolling
   const endOfMessagesRef = useRef(null);
 

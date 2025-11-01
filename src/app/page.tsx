@@ -14,14 +14,13 @@
 
     useEffect(() => {
       if (!isLoading && isAuthenticated) {
-        router.push("/dashboard");
+        router.push("/chat");
       }
-      console.log(isAuthenticated);
     }, [isAuthenticated, isLoading, router]);
 
     if (isLoading) {
       return (
-          <div className="flex items-center justify-center h-screen bg-black-100 font-sans">
+          <div  className="flex items-center justify-center h-screen bg-black-100 font-sans">
             <div className="text-lg font-semibold text-white flex items-center">
               <svg
                 className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600"

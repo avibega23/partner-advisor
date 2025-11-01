@@ -1,60 +1,35 @@
-import  {Document, model, models, Schema } from "mongoose";
+import { model, models, Schema } from "mongoose";
+import { IPartner } from "@/types/partner.types";
 
-interface IPartner extends Document {
-  name: string;
-  gender: string;
-  maritalStatus: string;
-  relationshipType: string;
-  perceivedPersonality: string;
-  userPerception?: {
-    communicationRating: number;
-    biggestChallenge: string;
-    loveLanguage?: string;
-  };
-  conflictResolution?: {
-    conflictStyle: string;
-    commonDisagreements: string[];
-  };
-  lifestyle?: {
-    freeTimeSpend: string;
-    socialLife: string;
-  };
-  createdBy: Schema.Types.ObjectId;
-}
-
-const partnerSchema: Schema<IPartner> = new Schema<IPartner>({
-  name: {
-    type: String,
-    required: true,
-  },
-  gender: {
-    type: String,
-    required: true,
-  },
-  maritalStatus: {
-    type: String,
-    required: true,
-  },
-  relationshipType: {
-    type: String,
-    required: true,
-  },
-  perceivedPersonality: {
-    type: String,
-    required: true,
-  },
+const partnerSchema = new Schema<IPartner>({
+  name: { type: String },
+  status: {type : String},
+  gender: { type: String },
+  age:{type:Number},
+  maritalStatus: { type: String },
+  relationshipType: { type: String },
+  perceivedPersonality: { type: String },
   userPerception: {
-    communicationRating: Number,
-    biggestChallenge: String,
-    loveLanguage: String,
+    type: new Schema({
+      communicationRating: Number,
+      biggestChallenge: String,
+      loveLanguage: String,
+    }),
+    required: false,
   },
   conflictResolution: {
-    conflictStyle: String,
-    commonDisagreements: [String],
+    type: new Schema({
+      conflictStyle: String,
+      commonDisagreements: [String],
+    }),
+    required: false,
   },
   lifestyle: {
-    freeTimeSpend: String,
-    socialLife: String,
+    type: new Schema({
+      freeTimeSpend: String,
+      socialLife: String,
+    }),
+    required: false,
   },
   createdBy: {
     type: Schema.Types.ObjectId,

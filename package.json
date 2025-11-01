@@ -14,9 +14,9 @@
     "mongoose": "^8.18.1",
     "motion": "^12.23.19",
     "motion-plus": "^1.5.1",
-    "next": "15.5.2",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "next": "^16.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
