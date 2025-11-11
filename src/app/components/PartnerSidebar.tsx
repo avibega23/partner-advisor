@@ -14,7 +14,6 @@ export default function PartnerSidebar({
   const router = useRouter();
   const [partners, setPartners] = useState<IPartner[]>([]);
   const [isCreating, setIsCreating] = useState<boolean>(false);
-  console.log(activePartnerId);
   useEffect(() => {
     const fetchPartners = async () => {
       const res = await fetch("../api/partners");
@@ -26,7 +25,6 @@ export default function PartnerSidebar({
   }, []);
 
   const handlePartnerSelect = (partnerId: string) => {
-    console.log({ id: partnerId });
     router.push(`/chat/${partnerId}`);
   };
 
@@ -69,11 +67,6 @@ export default function PartnerSidebar({
           Profiles
         </h2>
         {partners.map((partner) => {
-          console.log({
-            active: activePartnerId,
-            current: partner._id,
-            isMatch: activePartnerId === partner._id,
-          });
           return (
             <button
               key={partner._id}

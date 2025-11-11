@@ -79,7 +79,6 @@ export async function GET() {
       );
     }
     const modelUser = await User.findOne({ kindeId: user.id })
-    console.log(modelUser)
     const partners = await Partner.find({ createdBy: modelUser._id });
 
     return NextResponse.json(

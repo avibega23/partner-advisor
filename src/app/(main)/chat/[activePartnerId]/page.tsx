@@ -5,20 +5,8 @@ import ConversationView from "@/app/components/ConversationView";
 import ChatInput from "@/app/components/ChatInput";
 import { useEffect, useState } from "react";
 import { IPartner } from "@/types/partner.types";
-import {IMessage} from "@/types/message.types"
-import next from "next";
+import { IMessage } from "@/types/message.types";
 
-interface InputProps {
-  options?: string[];
-
-  onSendMessage: (message: string) => void;
-
-  onSelectOption: (option: string) => void;
-
-  disabled?: boolean;
-}
-
-// Add this inside your Page component
 const onboardingSteps = {
   new: {
     question: "What is your relationship with this person?",
@@ -118,7 +106,7 @@ const onboardingSteps = {
     question: "How active is their social life?",
     field: "lifestyle.socialLife",
     options: ["Introverted", "Balanced", "Extroverted"],
-    nextStatus: "completed",
+    nextStatus: "active",
     optionBool: true,
   },
 };
@@ -130,94 +118,155 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [inputOptions, setInputOptions] = useState<string[]>([]);
-  const [optionBool,setOptionBool] = useState(null);
 
   useEffect(() => {
     if (!activePartnerId) return;
 
     const fetchPartnerData = async () => {
       setIsLoading(true);
-      const res = await fetch(`../../api/partners/${activePartnerId}`);
-      const {data : partner} = await res.json();
+      const res = await fetch(`/api/partners/${activePartnerId}`);
+      const { data: partner } = await res.json();
       setActivePartner(partner);
 
-      if(partner.status == 'active')
-      {
-        const realHistory = [];
+      if (partner.status == "active") {
         // TODO: we have to fetch messages from api here
-        setMessages(realHistory);
+        const res = await fetch(`/api/chat/${activePartnerId}`);
+        const { data: history } = await res.json();
+        setMessages(history);
         setInputOptions([]);
-      }
-      else
-      {
+      } else {
         const step = onboardingSteps[partner.status];
 
-        if(step)
-        {
-          setMessages([{_id: "q_1" , role:"model" , content : step.question}]);
+        if (step) {
+          setMessages([
+            {
+              _id: `temp_model_${Date.now()}`,
+              role: "model", 
+
+              content: step.question,
+            },
+          ]);
 
           setInputOptions(step.options);
         }
       }
       setIsLoading(false);
+
     };
 
     fetchPartnerData();
   }, [activePartnerId]);
 
-  const inputProps: InputProps = {
-    options: ["Night", "Day"],
+  const handleOptionSelect = async (option: string) => {
+    if (!activePartner) return;
 
-    onSendMessage: (message: string) => {
-      console.log("Message sent:", message);
-    },
-
-    onSelectOption: (option: string) => {
-      console.log("Option selected:", option);
-    },
-  };
-
-  const handleOptionSelect = async (option : string) => {
-    if(!activePartner) return;
-    
     const currentStatus = activePartner.status;
     const currentStep = onboardingSteps[currentStatus];
-    if(!currentStatus) return;
+    if (!currentStatus) return;
 
-    const userMessage = { _id : "temp_usr_msg" , role : "user" , content : option};
-    setMessages(currentMessages => [...currentMessages , userMessage]);
+    const userMessage = {
+      _id: `temp_user_${Date.now()}`,
+      role: "user",
+      content: option,
+    };
+    setMessages((currentMessages) => [...currentMessages, userMessage]);
     setInputOptions([]);
     setIsLoading(true);
 
-    const res = await fetch(`../../api/partners/${activePartnerId}`, {
-      method : 'PUT',
-      headers : {'Content-Type' : 'application/json'},
-      body : JSON.stringify({
-        [currentStep.field] : option,
-        status : currentStatus.nextStatus
-      })
+    const res = await fetch(`/api/partners/${activePartnerId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        [currentStep.field]: option,
+        status: currentStep.nextStatus,
+      }),
     });
-    const {data : updatedPartner} = await res.json();
+    const { data: updatedPartner } = await res.json();
 
     setActivePartner(updatedPartner);
 
-    const nextStep = onboardingSteps[updatedPartner.status]
+    const nextStep = onboardingSteps[updatedPartner.status];
 
-    if(nextStep)
-    {
-      const nextQuestion = { _id : "q_2" , role : "model" , content : nextStep.question}
-      setMessages(currentMessages => [...currentMessages , nextQuestion]);
-      setInputOptions(nextStep.options)
-    }
-    else
-    {
-      const finalMessage = { _id : "q_final" , role : "model" , content : "Great, Thanks!"}
-      setMessages(currentMessages => [...currentMessages , finalMessage]);
+    if (nextStep) {
+      const nextQuestion = {
+        _id: `temp_model_${Date.now()}`,
+        role: "model",
+        content: nextStep.question,
+      };
+      setMessages((currentMessages) => [...currentMessages, nextQuestion]);
+      setInputOptions(nextStep.options);
+    } else {
+      const finalMessage = {
+        _id: `temp_model_${Date.now()}`,
+        role: "model",
+        content: "Great, Thanks!",
+      };
+      setMessages((currentMessages) => [...currentMessages, finalMessage]);
       setInputOptions([]);
     }
 
     setIsLoading(false);
-  }
+  };
+  const handleSendMessage = async (message: string) => {
+    const tempId = `temp_user ${Date.now()}`;
+    setMessages((current) => [
+      ...current,
+      { _id: tempId, role: "user", content: message },
+    ]);
+
+    setIsLoading(true);
+
+    if (activePartner?.status == "active") {
+      const res = await fetch(`/api/chat/${activePartnerId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: message }),
+      });
+      const { data: aiMessage } = await res.json();
+
+      setMessages((current) => [...current, aiMessage]);
+    } else {
+      const currentStatus = activePartner.status;
+      const currentStep = onboardingSteps[currentStatus];
+      if (!currentStatus) {
+        setIsLoading(false);
+        setInputOptions([]);
+        return;
+      }
+      const res = await fetch(`/api/partners/${activePartnerId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          [currentStep.field]: message,
+          status: currentStep.nextStatus,
+        }),
+      });
+      const { data: updatedPartner } = await res.json();
+
+      setActivePartner(updatedPartner);
+
+      const nextStep = onboardingSteps[updatedPartner.status];
+
+      if (nextStep) {
+        const nextQuestion = {
+          _id: `temp_model_${Date.now()}`,
+          role: "model",
+          content: nextStep.question,
+        };
+        setMessages((currentMessages) => [...currentMessages, nextQuestion]);
+        setInputOptions(nextStep.options);
+      } else {
+        const finalMessage = {
+          _id: `temp_model_${Date.now()}`,
+          role: "model",
+          content: "Great, Thanks!",
+        };
+        setMessages((currentMessages) => [...currentMessages, finalMessage]);
+        setInputOptions([]);
+      }
+    }
+    setIsLoading(false);
+  };
 
   return (
     <>
@@ -229,13 +278,11 @@ const Page = () => {
           <div className="p-4 border-b border-gray-200 bg-white text-center">
             <h1 className="text-2xl font-bold text-blue-600">Partner Name</h1>
           </div>
-          <ConversationView
-            messages={messages}
-          ></ConversationView>
+          <ConversationView messages={messages}></ConversationView>
           <div>
             <ChatInput
               options={inputOptions}
-              onSendMessage={/*We'll build this next */ console.log}
+              onSendMessage={handleSendMessage}
               onSelectOption={handleOptionSelect}
               disabled={isLoading}
             ></ChatInput>

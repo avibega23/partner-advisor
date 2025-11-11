@@ -32,7 +32,8 @@ const ChatInput: React.FC<InputProps> = ({
   const [inputValue, setInputValue] = useState("");
 
   // Determine if the text input should be disabled
-  const isInputDisabled = disabled || options.length < 0;
+  const showOptions = !disabled && options.length > 0;
+  const isInputDisabled = disabled || showOptions;
 
   // Handle form submission (pressing Enter or clicking Send)
   const handleSubmit = (e: React.FormEvent) => {
@@ -45,13 +46,12 @@ const ChatInput: React.FC<InputProps> = ({
 
   const handleOptionClick = (option: string) => {
     onSelectOption(option);
-   
   };
 
   return (
     <div className="w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 shadow-inner">
       
-      {!isInputDisabled && (
+      {showOptions && (
         <div className="mb-3 flex flex-wrap justify-center gap-2">
           {options.map((option) => (
             <button
@@ -72,8 +72,7 @@ const ChatInput: React.FC<InputProps> = ({
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          disabled={!isInputDisabled}
-          placeholder={!isInputDisabled ? "Please select an option above" : "Type your message..."}
+          placeholder={isInputDisabled ? "Please select an option above" : "Type your message..."}
           className="flex-1 block w-full rounded-lg border-gray-300 shadow-sm 
                      focus:border-blue-500 focus:ring-blue-500 
                      disabled:opacity-70 disabled:bg-gray-100
