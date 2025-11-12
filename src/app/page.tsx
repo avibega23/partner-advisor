@@ -15,12 +15,12 @@ export default function Home() {
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
       router.push("/chat");
-    }
+    } 
   }, [isAuthenticated, isLoading, router]);
 
   if (isLoading) {
     return (
-      <div className="bg-black-100 flex h-screen items-center justify-center font-sans">
+      <div className="bg-black-100 flex h-screen items-center justify-center">
         <div className="flex items-center text-lg font-semibold text-white">
           <svg
             className="mr-3 -ml-1 h-5 w-5 animate-spin text-blue-600"
@@ -49,7 +49,7 @@ export default function Home() {
   }
 
   return (
-    <main className="font-display bg-primary-1 flex h-screen items-center justify-center">
+    <main className="flex h-screen items-center justify-center bg-pallete-black">
       <div className="w-full max-w-md rounded-xl bg-white p-10 text-center shadow-lg">
         <h1 className="mb-4 text-4xl font-bold text-gray-800">
           Welcome to Partner Advisor
@@ -57,13 +57,13 @@ export default function Home() {
         <p className="mb-8 text-gray-600">
           Please sign in or create an account to access your dashboard.
         </p>
-        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <LoginLink className="bg-primary-1 w-full rounded-lg px-6 py-3 font-semibold text-white shadow-md transition-all duration-300 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none sm:w-auto">
+        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row dark:text-black">
+          <LoginLink className="w-full rounded-lg bg-primary-1 px-6 py-3 font-semibold text-white shadow-md transition-all duration-300 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none sm:w-auto">
             Login
           </LoginLink>
           <RegisterLink className="w-full rounded-lg bg-gray-200 px-6 py-3 font-semibold text-gray-800 transition-all duration-300 ease-in-out hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none sm:w-auto">
             Register
-          </RegisterLink>
+          </RegisterLink> 
         </div>
       </div>
     </main>

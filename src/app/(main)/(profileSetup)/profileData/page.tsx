@@ -282,7 +282,7 @@ export default function Page() {
       if (!response.ok) {
         throw new Error(result.error || "Something went wrong");
       }
-      router.push("/dashboard");
+      router.push("/chat");
     } catch (err: unknown) {
       console.error("Submission failed:", err);
       if (err instanceof Error) {

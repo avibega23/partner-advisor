@@ -1,9 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 
-@theme {
+@theme inline {
   --color-pallete-1: #5f0030;
-  --color-primary-1: var(--color-pallete-1);
-
+  --color-pallete-2: #980356;
+  --color-pallete-3: #b80065;
+  --color-pallete-4: #ff049b;
+  --color-pallete-5: #df007a;
+  --color-pallete-6: #ff27bb;
+  --color-pallete-7: #ff58d1;
+  --color-pallete-8: #ff98e5;
+  --color-primary-1: var(--color-pallete-4);
+  --color-pallete-black: #2A2A2A;
   --font-display: "Montserrat", sans-serif;
+}
+
+.dark {
+  --color-primary-1: #234356;
 }
