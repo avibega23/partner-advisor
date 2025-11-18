@@ -1,37 +1,46 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '../../../lib/dbconnect'; // Adjust the path based on your folder structure
-import { User } from '../../../models/user.model'; // Adjust the path to your User model
+import dbConnect from '../../../lib/dbconnect'; 
+import { User } from '../../../models/user.model'; 
+import { authOption } from '../auth/[...nextauth]/route';
+import { getServerSession } from 'next-auth';
 
 export async function POST(request: Request) {
   try {
     await dbConnect();
 
-    const data = await request.json();
+    const session = await getServerSession(authOption);
+    if (!session || !session.user || !session.user.id) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    const userId = session.user.id;
 
-    // You could add validation here before creating the user
-    if (!data.email) {
-        return NextResponse.json({ success: false, error: 'Email is required.' }, { status: 400 });
+   const { personality } = await request.json();
+
+    if (!personality) {
+      return NextResponse.json({ success: false, error: 'Personality data is required.' }, { status: 400 });
     }
 
-    const user = await User.findOneAndUpdate({email : data.email},{
-      ...data
-    });
-    await user.save();
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          personality: personality 
+        }
+      },
+      {
+        new: true, 
+      }
+    );
 
-    return NextResponse.json({ success: true, data: user }, { status: 201 });
+    if (!updatedUser) {
+      return NextResponse.json({ success: false, error: 'User not found.' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, data: updatedUser }, { status: 200 });
   } catch (error) {
-    console.error('USERCREATION::ERROR:: !!!', error);
+    console.error('USERUPDATION::ERROR:: !!!', error);
 
-    // We now check the type of 'error' before using its properties.
-    if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
-      return NextResponse.json({ success: false, error: 'A user with this email or Kinde ID already exists.' }, { status: 409 });
-    }
-
-    if (error instanceof Error) {
-      return NextResponse.json({ success: false, error: 'Server Error: ' + error.message }, { status: 500 });
-    }
-    
-    return NextResponse.json({ success: false, error: 'An unknown server error occurred.' }, { status: 500 });
+    return NextResponse.json({success : false, error : error});
   }
 }
 

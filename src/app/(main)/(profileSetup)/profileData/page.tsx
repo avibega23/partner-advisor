@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useRouter } from "next/navigation";
 
 // --- TYPE DEFINITIONS (No changes) ---
@@ -232,7 +231,6 @@ export default function Page() {
   const router = useRouter();
 
   // Use the mock Kinde hook
-  const { user, isLoading } = useKindeBrowserClient();
 
   const [formData, setFormData] = useState<UserInput>({
     name: "",

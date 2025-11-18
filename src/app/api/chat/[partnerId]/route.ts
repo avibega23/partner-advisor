@@ -2,24 +2,29 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/dbconnect";
 import { Message } from "@/models/message.model";
 import { User } from '@/models/user.model';
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { Partner } from "@/models/partner.model";
 import { GoogleGenAI } from "@google/genai";
+import { getServerSession } from "next-auth";
+import { authOption } from "./../../auth/[...nextauth]/route";
 
+//sends all the messages of partner chat
 export async function GET(request: Request, { params }: { params: { partnerId: string } }) {
     try {
         await dbConnect();
-        const { getUser } = getKindeServerSession();
-        const user = await getUser();
+        const session = await getServerSession(authOption);
+        if(!session || !session.user || !session.user.email)
+        {
+            return NextResponse.json({success : false , message : "Unauthorized"},{status:401});
+        }
 
+        const user = await User.findOne({email : session.user.email});
         if (!user || !user.id) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
-        const modelUser = await User.findOne({ kindeId: user.id });
 
         const messages = await Message.find({
             partnerId: params.partnerId,
-            userId: modelUser._id,
+            userId: user._id,
         }).sort({ createdAt: 'asc' });
 
         return NextResponse.json({ success: true, data: messages }, { status: 200 });
@@ -45,18 +50,22 @@ export async function GET(request: Request, { params }: { params: { partnerId: s
     }
 }
 
-
+//posts new message
 export async function POST(request: Request, { params }: { params: { partnerId: string } }) {
     try {
         await dbConnect();
-        const { getUser } = getKindeServerSession();
-        const user = await getUser();
+        
+        const session = await getServerSession(authOption);
+        if(!session || !session.user || !session.user.email)
+        {
+            return NextResponse.json({success : false , message : "Unauthorized"},{status:401});
+        }
 
+        const user = await User.findOne({email : session.user.email});
         if (!user || !user.id) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-        };
+        }
 
-        const modelUser = await User.findOne({ kindeId: user.id });
 
         const { message } = await request.json();
         if (!message) {
@@ -66,17 +75,17 @@ export async function POST(request: Request, { params }: { params: { partnerId: 
         await Message.create({
             content: message,
             role: "user",
-            userId: modelUser._id,
+            userId: user._id,
             partnerId: params.partnerId,
         });
 
         const partner = await Partner.findById(params.partnerId);
 
-        const chatHistory = await Message.find({ partnerId: params.partnerId, userId: modelUser._id });
+        const chatHistory = await Message.find({ partnerId: params.partnerId, userId: user._id });
 
         const prompt = `
             You are a Partner Advisor.
-            The user's profile: ${JSON.stringify(modelUser.personality)}
+            The user's profile: ${JSON.stringify(user.personality)}
             The partner's profile: ${JSON.stringify(partner)}
             
             Here is the chat history (user and model roles):
@@ -95,15 +104,14 @@ export async function POST(request: Request, { params }: { params: { partnerId: 
         });
 
 
-        // 6. Save the AI's response to the DB
         const aiMessage = await Message.create({
             content: response.text,
             role: 'model',
-            userId: modelUser._id,
+            userId: user._id,
             partnerId: params.partnerId,
         });
 
-        // 7. Send the *new* AI message back to the front end
+
         return NextResponse.json({ success: true, data: aiMessage }, { status: 201 });
 
     } catch (error) {

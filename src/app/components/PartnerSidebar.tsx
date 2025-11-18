@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PlusCircle, LogOut } from "lucide-react"; // Icons
-import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
 import { IPartner } from "@/types/partner.types";
 
 export default function PartnerSidebar({
@@ -50,20 +49,20 @@ export default function PartnerSidebar({
 
       // Reset form state
       setIsCreating(false);
-      e.currentTarget.reset()
+      e.currentTarget.reset();
     }
   };
 
   return (
-    <div className="flex flex-col w-72 h-screen border-r border-gray-200 bg-gray-50">
+    <div className="flex h-screen w-72 flex-col border-r border-gray-200 bg-gray-50">
       {/* --- Logo Area --- */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="border-b border-gray-200 p-4">
         <h1 className="text-2xl font-bold text-blue-600">Partner Advisor</h1>
       </div>
 
       {/* --- Profiles Display --- */}
-      <div className="flex-grow overflow-y-auto p-4 space-y-2">
-        <h2 className="text-sm font-semibold text-gray-500 uppercase mb-3">
+      <div className="flex-grow space-y-2 overflow-y-auto p-4">
+        <h2 className="mb-3 text-sm font-semibold text-gray-500 uppercase">
           Profiles
         </h2>
         {partners.map((partner) => {
@@ -71,14 +70,11 @@ export default function PartnerSidebar({
             <button
               key={partner._id}
               onClick={() => handlePartnerSelect(partner._id)}
-              className={`
-                w-full text-left p-3 rounded-lg transition-colors 
-                ${
-                  activePartnerId === partner._id
-                    ? "bg-blue-100 text-blue-800 font-semibold"
-                    : "text-gray-700 hover:bg-gray-200"
-                }
-              `}
+              className={`w-full rounded-lg p-3 text-left transition-colors ${
+                activePartnerId === partner._id
+                  ? "bg-blue-100 font-semibold text-blue-800"
+                  : "text-gray-700 hover:bg-gray-200"
+              } `}
             >
               {partner.name}
             </button>
@@ -102,22 +98,14 @@ export default function PartnerSidebar({
         </div>
       )}
       {/* --- New Profile Button --- */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="border-t border-gray-200 p-4">
         <button
           onClick={handleNewProfile}
-          className="w-full flex items-center justify-center p-3 text-sm font-medium text-white bg-green-600 rounded-lg shadow hover:bg-green-700 transition-colors"
+          className="flex w-full items-center justify-center rounded-lg bg-green-600 p-3 text-sm font-medium text-white shadow transition-colors hover:bg-green-700"
         >
           <PlusCircle size={18} className="mr-2" />
           New Partner Profile
         </button>
-      </div>
-
-      {/* --- Logout Button --- */}
-      <div className="p-4 border-t border-gray-200">
-        <LogoutLink className="w-full flex items-center justify-center p-3 text-sm font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors">
-          <LogOut size={18} className="mr-2" />
-          Logout
-        </LogoutLink>
       </div>
     </div>
   );

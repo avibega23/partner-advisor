@@ -1,7 +1,7 @@
 import { Montserrat } from "next/font/google";
 import "./globals.css";
-import { Providers } from "./components/Provider";
 import { ThemeProvider } from "next-themes";
+import AuthProvider from "./components/AuthProvider";
 
 const monserat = Montserrat({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
@@ -18,11 +18,11 @@ export default function RootLayout({
         suppressHydrationWarning
         className={` ${monserat.className} font-display antialiased`}
       >
-        <Providers>
+        <AuthProvider>
           <ThemeProvider>
             {children}
           </ThemeProvider>
-        </Providers>
+        </AuthProvider>
       </body>
     </html>
   );

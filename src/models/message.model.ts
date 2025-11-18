@@ -9,21 +9,21 @@ const MessageSchema: Schema = new Schema({
   role: {
     type: String,
     required: true,
-    enum: ['user', 'model'], // Ensures role can only be one of these
+    enum: ['user', 'model'], 
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'User', // Links to your User model
+    ref: 'User',
     required: true,
   },
   partnerId: {
     type: Schema.Types.ObjectId,
-    ref: 'Partner', // Links to your Partner model
+    ref: 'Partner',
     required: true,
   },
 }, {
-  timestamps: true // Automatically adds createdAt and updatedAt
+  timestamps: true 
 });
 
-// 3. Create and export the model
+
 export const Message = models.Message ?? model<IMessage>("Message", MessageSchema);
