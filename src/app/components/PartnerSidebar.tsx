@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { PlusCircle, LogOut } from "lucide-react"; // Icons
+import { PlusCircle,  } from "lucide-react"; // Icons
 import { IPartner } from "@/types/partner.types";
+import { signOut } from "next-auth/react";
 
 export default function PartnerSidebar({
   activePartnerId,
@@ -106,7 +107,9 @@ export default function PartnerSidebar({
           <PlusCircle size={18} className="mr-2" />
           New Partner Profile
         </button>
+        
       </div>
+      <button className="text-black" onClick={()=>{signOut()}}>Signout</button>
     </div>
   );
 }

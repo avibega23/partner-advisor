@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useSession, signIn,signOut } from "next-auth/react";
+import { Button } from "./components/ui/Button";
 import {useRouter} from "next/navigation";
 export default function Home() {
   const { data: session, status } = useSession();
@@ -33,6 +34,7 @@ export default function Home() {
         </p>
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row dark:text-black">
           <button onClick={() => signIn('google')}>Sign in with Google</button>
+          <Button size="md" background="bg-pallete-4" variant="primary" text="Hello"></Button>
         </div>
       </div>
     </main>

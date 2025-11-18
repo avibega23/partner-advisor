@@ -1,12 +1,24 @@
-"use client"
-import PartnerSidebar from "@/app/components/PartnerSidebar"
+"use client";
+import PartnerSidebar from "@/app/components/PartnerSidebar";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const Page = () => {
-  return <>
-    <div>
-      <PartnerSidebar activePartnerId=""></PartnerSidebar>
-    </div>
-  </>
-}
+    const { status } = useSession();
+    const router = useRouter();
 
-export default Page
+    useEffect(() => {
+        console.log(status)
+        
+    });
+    return (
+        <>
+            <div>
+                <PartnerSidebar activePartnerId=""></PartnerSidebar>
+            </div>
+        </>
+    );
+};
+
+export default Page;

@@ -5,7 +5,9 @@ import ConversationView from "@/app/components/ConversationView";
 import ChatInput from "@/app/components/ChatInput";
 import { useEffect, useState } from "react";
 import { IPartner } from "@/types/partner.types";
+import { useSession } from "next-auth/react";
 import { IMessage } from "@/types/message.types";
+import { useRouter } from "next/navigation";
 
 const onboardingSteps = {
   new: {
@@ -118,9 +120,13 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [inputOptions, setInputOptions] = useState<string[]>([]);
+  const {status} = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     if (!activePartnerId) return;
+
+    if(status === 'authenticated') router.push('/');
 
     const fetchPartnerData = async () => {
       setIsLoading(true);
