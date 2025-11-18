@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { Partner } from "@/models/partner.model";
-import dbConnect from "@/lib/dbconnect"; // 1. Import Kinde
-import { User } from "@/models/user.model"; // 2. Import User model
+import dbConnect from "@/lib/dbconnect";
+import { getServerSession } from "next-auth";
+import { authOption } from "../../auth/[...nextauth]/route";
+import { User } from "@/models/user.model"; 
 
 //get partner 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
@@ -10,17 +12,20 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   try {
     await dbConnect();
 
-    if (!user || !user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const session = await getServerSession(authOption);
+
+    if (!session || !session.user || !session.user.email) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
-    const modelUser = await User.findOne({ kindeId: user.id });
-    if (!modelUser) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+
+    const user = await User.findOne({ email: session.user.email });
+    if (!user || !user.id) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
     const partner = await Partner.findOne({
       _id: id,
-      createdBy: modelUser.id
+      createdBy: user.id
     });
 
     if (!partner) {
@@ -51,29 +56,29 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   try {
     await dbConnect();
 
-    if (!user || !user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-    const modelUser = await User.findOne({ kindeId: user.id });
-    if (!modelUser) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
+    const session = await getServerSession(authOption);
+    
+        if (!session || !session.user || !session.user.email) {
+          return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+        }
+    
+        const user = await User.findOne({ email: session.user.email });
+        if (!user || !user.id) {
+          return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+        }
 
-    // 1. Get the update data from the frontend
     const body = await req.json();
-    // body will be { relationshipType: 'Romantic', status: 'collecting_gender' }
 
-    // 2. Find and update the partner
     const updatedPartner = await Partner.findOneAndUpdate(
       {
         _id: id,
-        createdBy: modelUser._id, 
+        createdBy: user._id,
       },
       {
-        $set: body, 
+        $set: body,
       },
       {
-        new: true, 
+        new: true,
       }
     );
 

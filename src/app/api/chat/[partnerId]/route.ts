@@ -12,12 +12,11 @@ export async function GET(request: Request, { params }: { params: { partnerId: s
     try {
         await dbConnect();
         const session = await getServerSession(authOption);
-        if(!session || !session.user || !session.user.email)
-        {
-            return NextResponse.json({success : false , message : "Unauthorized"},{status:401});
+        if (!session || !session.user || !session.user.email) {
+            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
-        const user = await User.findOne({email : session.user.email});
+        const user = await User.findOne({ email: session.user.email });
         if (!user || !user.id) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
@@ -52,19 +51,18 @@ export async function GET(request: Request, { params }: { params: { partnerId: s
 
 //posts new message
 export async function POST(request: Request, { params }: { params: { partnerId: string } }) {
-    try {
-        await dbConnect();
-        
-        const session = await getServerSession(authOption);
-        if(!session || !session.user || !session.user.email)
-        {
-            return NextResponse.json({success : false , message : "Unauthorized"},{status:401});
-        }
+    await dbConnect();
 
-        const user = await User.findOne({email : session.user.email});
-        if (!user || !user.id) {
-            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-        }
+    const session = await getServerSession(authOption);
+    if (!session || !session.user || !session.user.email) {
+        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await User.findOne({ email: session.user.email });
+    if (!user || !user.id) {
+        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    try {
 
 
         const { message } = await request.json();
@@ -114,23 +112,15 @@ export async function POST(request: Request, { params }: { params: { partnerId: 
 
         return NextResponse.json({ success: true, data: aiMessage }, { status: 201 });
 
-    } catch (error) {
-        console.log(`MESSAGE-POSTING::ERRROR :: !!! `, error)
+    } catch (e) {
+        const aiMessage = await Message.create({
+            content: "Sorry I can't talk right now! Please try again",
+            role: 'model',
+            userId: user._id,
+            partnerId: params.partnerId,
+        });
 
 
-        let message = "Something went wrong";
-
-        if (error instanceof Error) {
-            message = error.message;
-        }
-
-        return NextResponse.json({
-            success: false,
-            error: message || "Something went wrong"
-        },
-            {
-                status: 500
-            }
-        )
+        return NextResponse.json({ success: true, data: aiMessage }, { status: 201 });
     }
 }

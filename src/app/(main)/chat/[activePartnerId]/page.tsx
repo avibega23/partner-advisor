@@ -261,7 +261,12 @@ const Page = () => {
           role: "model",
           content: "Great, Thanks!",
         };
-        setMessages((currentMessages) => [...currentMessages, finalMessage]);
+        const finalMessage2 = {
+          _id: `temp_model_${Date.now()}`,
+          role: "model",
+          content: "I am happy to talk now! please type your issues..",
+        };
+        setMessages((currentMessages) => [...currentMessages, finalMessage,finalMessage2]);
         setInputOptions([]);
       }
     }

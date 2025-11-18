@@ -1,217 +1,115 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react"; // 1. Import NextAuth's useSession
 
-// --- TYPE DEFINITIONS (No changes) ---
-interface UserInput {
-  name: string;
-  email: string;
-  kindeId: string;
-  gender: string;
-  age: number;
-  maritalStatus: string;
-  adventurous: number;
-  coreValues: string[];
-  birdOrOwl: boolean;
-  stressHandling: string;
+// 2. This interface now matches your User model's 'personality' object
+interface PersonalityInput {
   communicationStyle: string;
-  closeFriendDescribe: string;
-  freeTimeSpend: string;
+  conflictStyle: string;
+  loveLanguage: string;
+  selfDescription: string;
 }
 
 interface Question {
-  key: keyof UserInput;
+  key: keyof PersonalityInput;
   inputTitle: string;
-  inputType: boolean;
+  inputType: 'text' | 'radio' | 'textarea'; // Use text for input type
   option?: string[];
 }
 
+// 3. The questions now match your User model
 const questions: Question[] = [
   {
-    key: "gender",
-    inputTitle: "Are You?",
-    inputType: false,
-    option: ["Male", "Female"],
-  },
-  {
-    key: "maritalStatus",
-    inputTitle: "Are You Married?",
-    inputType: false,
-    option: ["Yes", "No"],
-  },
-  { key: "age", inputTitle: "How Old Are You?", inputType: true },
-  {
-    key: "adventurous",
-    inputTitle: "On a scale of 1 to 10, how adventurous are you?",
-    inputType: true,
-  },
-  {
-    key: "coreValues",
-    inputTitle: "What do you value the most? (Select all that apply)",
-    inputType: false,
-    option: ["Trust", "Respect", "Loyalty", "Growth", "Compassion", "Honesty"],
-  },
-  {
-    key: "birdOrOwl",
-    inputTitle: "Are You a Night Owl Or an Early Bird?",
-    inputType: false,
-    option: ["Night Owl", "Early Bird"],
-  },
-  {
-    key: "stressHandling",
-    inputTitle: "How Do You Handle Your Stress?",
-    inputType: true,
-  },
-  {
     key: "communicationStyle",
-    inputTitle: "How do you prefer communication?",
-    inputType: false,
-    option: ["Direct", "Subtle", "Passive"],
+    inputTitle: "How do you prefer to communicate?",
+    inputType: 'radio',
+    option: ["Direct", "Empathetic", "Analytical", "Reserved"],
   },
   {
-    key: "closeFriendDescribe",
-    inputTitle: "What type of behavior do you expect from your friend?",
-    inputType: true,
+    key: "conflictStyle",
+    inputTitle: "How do you typically handle conflicts?",
+    inputType: 'radio',
+    option: ["Avoidant", "Confrontational", "Compromising", "Collaborative", "Accommodating"],
   },
   {
-    key: "freeTimeSpend",
-    inputTitle: "How Do You Spend Your Free Time?",
-    inputType: true,
+    key: "loveLanguage",
+    inputTitle: "What’s your primary love language?",
+    inputType: 'radio',
+    option: [
+      "Words of Affirmation",
+      "Acts of Service",
+      "Receiving Gifts",
+      "Quality Time",
+      "Physical Touch",
+    ],
+  },
+  {
+    key: "selfDescription",
+    inputTitle: "In a few words, how would you describe yourself?",
+    inputType: 'textarea',
   },
 ];
 
-interface InputProps<K extends keyof UserInput> {
-  data: Question;
-  value: UserInput[K];
-  onChange: (value: UserInput[K]) => void;
-}
+// --- Your generic Input component is great, but let's simplify ---
+// (We can use a simpler version for this form)
 
-function Input<K extends keyof UserInput>({
+function Input<K extends keyof PersonalityInput>({
   data,
   value,
   onChange,
-}: InputProps<K>) {
-  const handleCheckboxChange = (option: string) => {
-    const currentValue = (value as string[]) || [];
-    const newValues = currentValue.includes(option)
-      ? currentValue.filter((item) => item !== option)
-      : [...currentValue, option];
-    onChange(newValues as UserInput[K]);
-  };
-
+}: {
+  data: Question;
+  value: PersonalityInput[K];
+  onChange: (value: PersonalityInput[K]) => void;
+}) {
+  
   const renderInput = () => {
-    switch (data.key) {
-      case "age":
+    switch (data.inputType) {
+      case 'textarea':
         return (
-          <input
-            min={1}
-            max={100}
-            type="number"
-            placeholder="Enter a number"
-            className="w-full border p-2 rounded bg-gray-50 text-gray-800"
-            value={(value as number) || ""}
-            onChange={(e) => {
-              const val =
-                e.target.value === ""
-                  ? 0
-                  : Math.max(1, Math.min(100, parseInt(e.target.value, 10)));
-
-              onChange(val as UserInput[K]);
-            }}
+          <textarea
+            placeholder="Enter your answer"
+            className="w-full border p-2 rounded bg-gray-50 text-gray-800 min-h-[100px]"
+            value={value as string || ""}
+            onChange={(e) => onChange(e.target.value as PersonalityInput[K])}
           />
         );
-      case "adventurous":
-        return (
-          <input
-            min={1}
-            max={10}
-            type="number"
-            placeholder="Enter a number"
-            className="w-full border p-2 rounded bg-gray-50 text-gray-800"
-            value={(value as number) || ""}
-            onChange={(e) => {
-              const val =
-                e.target.value === ""
-                  ? 0
-                  : Math.max(1, Math.min(10, parseInt(e.target.value, 10)));
-
-              onChange(val as UserInput[K]);
-            }}
-          />
-        );
-      case "coreValues":
+      
+      case 'radio':
         return (
           <div className="flex flex-col gap-2">
             {data.option?.map((opt, i) => (
               <label
                 key={i}
-                className="flex items-center text-gray-800 gap-2 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  name={data.inputTitle}
-                  value={opt}
-                  checked={(value as string[]).includes(opt)}
-                  onChange={() => handleCheckboxChange(opt)}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                {opt}
-              </label>
-            ))}
-          </div>
-        );
-      case "birdOrOwl":
-        return (
-          <div className="flex flex-col gap-2 text-black">
-            {data.option?.map((opt, i) => (
-              <label key={i} className="flex items-center  cursor-pointer">
-                <input
-                  type="radio"
-                  name={data.inputTitle}
-                  value={opt}
-                  checked={(value as boolean) === (opt === "Night Owl")}
-                  onChange={() =>
-                    onChange((opt === "Night Owl") as UserInput[K])
-                  }
-                />
-                {opt}
-              </label>
-            ))}
-          </div>
-        );
-      default:
-        if (data.inputType) {
-          return (
-            <input
-              type="text"
-              placeholder="Enter your answer"
-              className="w-full border p-2 rounded bg-gray-50 text-gray-800"
-              value={value as string}
-              onChange={(e) => onChange(e.target.value as UserInput[K])}
-            />
-          );
-        }
-        return (
-          <div className="flex flex-col gap-2">
-            {data.option?.map((opt, i) => (
-              <label
-                key={i}
-                className="flex  text-gray-800 items-center gap-2 cursor-pointer"
+                className="flex text-gray-800 items-center gap-2 cursor-pointer"
               >
                 <input
                   type="radio"
-                  name={data.inputTitle}
+                  name={data.key}
                   value={opt}
                   checked={value === opt}
-                  onChange={() => onChange(opt as UserInput[K])}
+                  onChange={() => onChange(opt as PersonalityInput[K])}
                 />
                 {opt}
               </label>
             ))}
           </div>
+        );
+
+      default: // 'text' or 'number' can be handled here
+        return (
+          <input
+            type={data.inputType === 'text' ? 'text' : 'number'}
+            placeholder="Enter your answer"
+            className="w-full border p-2 rounded bg-gray-50 text-gray-800"
+            value={value as string || ""}
+            onChange={(e) => onChange(e.target.value as PersonalityInput[K])}
+          />
         );
     }
   };
+
   return (
     <div className="p-6 border rounded-lg shadow-md bg-white w-full max-w-md mx-auto">
       <h2 className="text-xl font-semibold mb-4 text-gray-800">
@@ -222,7 +120,6 @@ function Input<K extends keyof UserInput>({
   );
 }
 
-// --- MAIN PAGE COMPONENT ---
 
 export default function Page() {
   const [index, setIndex] = useState<number>(0);
@@ -230,57 +127,60 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Use the mock Kinde hook
+  // 4. Use NextAuth's session hook
+  const { data: session, status } = useSession();
 
-  const [formData, setFormData] = useState<UserInput>({
-    name: "",
-    email: "",
-    kindeId: "",
-    gender: "",
-    age: 0,
-    maritalStatus: "",
-    adventurous: 0,
-    coreValues: [],
-    birdOrOwl: false,
-    stressHandling: "",
+  // 5. Form data is *only* the personality object
+  const [formData, setFormData] = useState<PersonalityInput>({
     communicationStyle: "",
-    closeFriendDescribe: "",
-    freeTimeSpend: "",
+    conflictStyle: "",
+    loveLanguage: "",
+    selfDescription: "",
   });
 
-  // Use useEffect to populate form with Kinde data
+  // 6. Use useEffect to fetch existing profile data
   useEffect(() => {
-    if (user) {
-      setFormData((prev) => ({
-        ...prev,
-        name: user.given_name || "",
-        email: user.email || "",
-        kindeId: user.id || "",
-      }));
+    // This status handles the loading state
+    if (status === "authenticated") {
+      setIsSubmitting(true); // Use this as a loading state
+      fetch('/api/user/profile') // Call our new GET route
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.data.personality) {
+            setFormData(data.data.personality); // Pre-fill the form
+          }
+          setIsSubmitting(false);
+        });
+    } else if (status === "unauthenticated") {
+      router.push("/api/auth/signin"); 
     }
-  }, [user]); // This effect runs when the user object is loaded
+  }, [status, router]);
 
-  const handleChange = <K extends keyof UserInput>(
+  const handleChange = <K extends keyof PersonalityInput>(
     key: K,
-    value: UserInput[K]
+    value: PersonalityInput[K]
   ) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
+  // 7. This is the updated handleSubmit function
   const handleSubmit = async () => {
     setError(null);
+    setIsSubmitting(true);
     try {
-      const response = await fetch("./../../api/profileData", {
-        // This should point to your POST route
-        method: "POST",
+      const response = await fetch("/api/user/profile", { 
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ personality: formData }), 
       });
+      
       const result = await response.json();
       if (!response.ok) {
         throw new Error(result.error || "Something went wrong");
       }
+      
       router.push("/chat");
+      
     } catch (err: unknown) {
       console.error("Submission failed:", err);
       if (err instanceof Error) {
@@ -297,24 +197,9 @@ export default function Page() {
     const currentKey = questions[index].key;
     const val = formData[currentKey];
 
-    if (
-      (currentKey === "adventurous") &&
-      (!val || (val as number) < 1 || (val as number) > 10)
-    ) {
-      setError("please enter a number between 1 and 10");
-      return;
-    }
-     if (
-      (currentKey === "age" ) &&
-      (!val || (val as number) < 1 || (val as number) > 100)
-    ) {
-      setError("please enter a number between 1 and 10");
-      return;
-    }
-
-    if (currentKey != "coreValues" && val === "") {
-      setError("this field is required");
-      return;
+    if (!val || (Array.isArray(val) && val.length === 0)) {
+       setError("This field is required.");
+       return;
     }
 
     setError(null);
@@ -332,7 +217,7 @@ export default function Page() {
     }
   };
 
-  if (isLoading) {
+  if (status === "loading" || isSubmitting) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <p>Loading user data...</p>

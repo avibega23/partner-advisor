@@ -29,7 +29,6 @@ export default function ConversationView({messages}) {
       */}
       {messages.length > 0 ? (
         messages.map((msg, index) => (
-          // Assuming your message object has a unique '_id' from Mongoose
           <ChatMessage key={msg._id || index} message={msg} />
         ))
       ) : (
