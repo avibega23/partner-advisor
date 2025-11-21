@@ -2,17 +2,29 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-pallete-1: #5f0030;
-  --color-pallete-2: #980356;
-  --color-pallete-3: #b80065;
-  --color-pallete-4: #ff049b;
-  --color-pallete-5: #df007a;
-  --color-pallete-6: #ff27bb;
-  --color-pallete-7: #ff58d1;
-  --color-pallete-8: #ff98e5;
-  --color-primary-1: var(--color-pallete-4);
-  --color-pallete-black: #2A2A2A;
-  --font-display: "Montserrat", sans-serif;
+    --color-pallete-1: #5f0030;
+    --color-pallete-2: #980356;
+    --color-pallete-3: #b80065;
+    --color-pallete-4: #ff049b;
+    --color-pallete-5: #df007a;
+    --color-pallete-6: #ff27bb;
+    --color-pallete-7: #ff58d1;
+    --color-pallete-8: #ff98e5;
+
+    --color-random-1: #1e2a78;
+    --color-random-2: #2b4c7e;
+    --color-random-3: #355574;
+    --color-random-4: #4b8bbe;
+    --color-random-5: #58a6ff;
+    --color-random-6: #8ab4f8;
+    --color-random-7: #7ae582;
+    --color-random-8: #3ebd93;
+    --color-random-9: #00a676;
+
+    --color-primary-1: var(--color-pallete-4);
+    --color-pallete-black: #191919;
+    --color-pallete-secondary: #414141;
+    --font-display: "Montserrat", sans-serif;
 }
 
 /* .dark {

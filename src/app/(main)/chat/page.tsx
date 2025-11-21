@@ -15,7 +15,6 @@ const Page = () => {
     return (
         <>
             <div>
-                <PartnerSidebar activePartnerId=""></PartnerSidebar>
             </div>
         </>
     );

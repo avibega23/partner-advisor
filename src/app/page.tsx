@@ -1,45 +1,43 @@
 "use client";
+import { useEffect, useState } from "react";
+import { SideBar, sidebarProps, Button, Logo } from "./components/ui/";
+import axios from "axios";
+import { IPartner } from "@/types/partner.types";
+import { NewUserIcon } from "./components/icons";
 
-import React from "react";
-import { useSession, signIn,signOut } from "next-auth/react";
-import { Button } from "./components/ui/Button";
-import {useRouter} from "next/navigation";
-export default function Home() {
-  const { data: session, status } = useSession();
-  const router = useRouter()
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
-
-  if (status === 'authenticated') {
-    router.push('/chat')
-    return (
-      <div>
-        <p>Signed in as {session.user.email}</p>
-        <img src={session.user.image} alt="Profile" style={{borderRadius: '50px'}} />
-        <button onClick={() => signOut()}>Sign out</button>
-      </div>
-    );
-  }
-
-
-  return (
-    <main className="flex h-screen items-center justify-center bg-pallete-black">
-      <div className="w-full max-w-md rounded-xl bg-white p-10 text-center shadow-lg">
-        <h1 className="mb-4 text-4xl font-bold text-gray-800">
-          Welcome to Partner Advisor
-        </h1>
-        <p className="mb-8 text-gray-600">
-          Please sign in or create an account to access your dashboard.
-        </p>
-        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row dark:text-black">
-          <button onClick={() => signIn('google')}>Sign in with Google</button>
-          <Button size="md" background="bg-pallete-4" variant="primary" text="Hello"></Button>
-        </div>
-      </div>
-    </main>
-  );
-}
+const partnerOnClickHandler = (partnerId: string) => {
+    //todo have to do
+};
 
 
 
+const Page = () => {
+    const [partners, setPartners] = useState<IPartner[] | undefined>(undefined);
+    useEffect(() => {
+        const fetchPartners = async () => {
+            axios.get("/api/partners").then((response) => {
+                setPartners(response.data.data);
+                console.log(response);
+            });
+        };
+
+        fetchPartners();
+    }, []);
+    const sideBarLocalProps: sidebarProps = {
+        partners: partners,
+        ButtonComponent: Button,
+        buttonProps: {
+            background: "bg-pallete-secondary",
+            onClick: () => {},
+            size: "md",
+            text: "New Partner",
+            variant: "primary",
+            startIcon: <NewUserIcon></NewUserIcon>
+        },
+        logo: <Logo></Logo>,
+        parnerOnClick: partnerOnClickHandler,
+    };
+    return <SideBar {...sideBarLocalProps}></SideBar>;
+};
+
+export default Page;

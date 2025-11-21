@@ -1,11 +1,12 @@
 import { ReactElement } from "react";
 
-interface ButtonProps {
+export interface ButtonProps {
     text: string;
-    variant:string
+    variant: string;
     background: string;
     startIcon?: ReactElement;
     size: "sm" | "md" | "lg";
+    onClick: () => void;
 }
 
 const sizeStyles = {
@@ -13,12 +14,15 @@ const sizeStyles = {
     md: "p-4 rounded-md",
     lg: "p-6 rounded-lg",
 };
-const defaultStyles = "flex text-white font";
+const defaultStyles = "flex text-white font w-full gap-2.5";
 export const Button = (props: ButtonProps) => {
     return (
-        <div className={`${sizeStyles[props.size]} ${defaultStyles} ${props.background}`}>
+        <button
+            onClick={props.onClick}
+            className={`${sizeStyles[props.size]} ${defaultStyles} ${props.background}`}
+        >
             {props?.startIcon}
             {props.text}
-        </div>
+        </button>
     );
 };
