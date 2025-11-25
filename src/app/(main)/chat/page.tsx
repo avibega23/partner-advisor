@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { PartnerContext } from "@/hooks/usePartner";
 
 const Page = () => {
+    const [partnerId,setPartnerId] = useState<string>("");
     const [partners, setPartners] = useState<IPartner[]>([]);
 
 
@@ -42,7 +43,7 @@ const Page = () => {
 
     const addPartner = (partner: IPartner) => {
         setPartners((prev) => [...prev, partner]);
-        router.push(`/${partner._id}`)
+        setPartnerId(partner._id);
     };
 
     return (

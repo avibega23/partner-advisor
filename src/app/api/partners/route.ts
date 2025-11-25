@@ -35,6 +35,11 @@ export async function POST(request: Request) {
       "bg-random-9",
     ];
 
+    const partner1 = await Partner.findOne({name: clientData.name});
+    if (partner1) {
+      return NextResponse.json({ success: false, message: "Partner Already Exist" }, { status: 200 });
+    }
+    
     const getRandomColor = () => {
       return colorClasses[Math.floor(Math.random() * colorClasses.length)];
     };

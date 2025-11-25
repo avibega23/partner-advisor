@@ -19,7 +19,14 @@ export const NewPartnerDialog = () => {
                 name: text,
             })
             .then((response) => {
-                partnerHandler(response.data.data);
+                console.log(response)
+                if(!response.data.status)
+                {
+                    alert("Partner Name Already Exists");
+                    return;
+                }
+                if(response.data.status)
+                    partnerHandler(response.data.data);
             });
         setText("");
     };
