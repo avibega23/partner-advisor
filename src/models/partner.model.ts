@@ -5,6 +5,7 @@ const partnerSchema = new Schema<IPartner>({
   name: { type: String },
   status: {type : String},
   gender: { type: String },
+  profileColor: {type : String},
   age:{type:Number},
   maritalStatus: { type: String },
   relationshipType: { type: String },

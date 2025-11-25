@@ -23,13 +23,28 @@ export async function POST(request: Request) {
 
     const clientData = await request.json();
 
+    const colorClasses = [
+      "bg-random-1",
+      "bg-random-2",
+      "bg-random-3",
+      "bg-random-4",
+      "bg-random-5",
+      "bg-random-6",
+      "bg-random-7",
+      "bg-random-8",
+      "bg-random-9",
+    ];
+
+    const getRandomColor = () => {
+      return colorClasses[Math.floor(Math.random() * colorClasses.length)];
+    };
 
     const newPartnerData = {
-      ...clientData,
+      name: clientData.name,
+      profileColor:getRandomColor(),
       createdBy: user._id,
       status: "new",
     };
-
     const partner = await Partner.create(newPartnerData);
 
     return NextResponse.json({
@@ -65,7 +80,7 @@ export async function GET() {
     await dbConnect();
 
 
-   const session = await getServerSession(authOption);
+    const session = await getServerSession(authOption);
 
     if (!session || !session.user || !session.user.email) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });

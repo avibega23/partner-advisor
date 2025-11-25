@@ -1,44 +1,40 @@
-import { ReactElement, ComponentType } from "react";
+import { ReactElement } from "react";
 import type { ButtonProps } from "./index";
 import type { IPartner } from "@/types/partner.types";
+import { Button, NewPartnerDialog } from "./index";
+import { useMemo,useState } from "react";
+import NewUser from "../icons/NewUser";
 
 export interface sidebarProps {
     logo: ReactElement;
-    ButtonComponent: ComponentType<ButtonProps>;
-    buttonProps: ButtonProps;
     partners: IPartner[] | undefined;
-    parnerOnClick: (partnerId:string)=>void
+    parnerOnClick: (partnerId: string) => void;
 }
 
-const colorClasses = [
-    "bg-random-1",
-    "bg-random-2",
-    "bg-random-3",
-    "bg-random-4",
-    "bg-random-5",
-    "bg-random-6",
-    "bg-random-7",
-    "bg-random-8",
-    "bg-random-9",
-];
-
-const getRandomColor = () => {
-    return colorClasses[Math.floor(Math.random() * colorClasses.length)];
-};
 
 export const SideBar = ({
     logo,
-    ButtonComponent,
-    buttonProps,
     partners,
-    parnerOnClick
+    parnerOnClick,
 }: sidebarProps) => {
+
+    const [newPartnerDialog,setNewPartnerDialog] = useState<boolean>(false);
+    const buttonProps :ButtonProps = {
+        background:'bg-black',
+        onClick:()=>{setNewPartnerDialog((prev)=>!prev)},
+        size: "md",
+        text:"New Partner",
+        variant:"primary",
+        startIcon:<NewUser></NewUser>
+        
+    }
     return (
         <div className="flex h-screen max-w-72 flex-col items-start gap-4 bg-pallete-black p-4">
             <div className="px-4 py-8 text-2xl">{logo}</div>
             <div className="w-full p-4">
-                <ButtonComponent {...buttonProps}></ButtonComponent>
+                <Button {...buttonProps}></Button>
             </div>
+            {newPartnerDialog && (<div className="w-full p-4"><NewPartnerDialog></NewPartnerDialog></div>)}
             <div className="flex h-full w-full flex-col gap-2.5 p-4">
                 {partners?.map((partner) => {
                     const formatName = (name: string): string =>
@@ -46,12 +42,14 @@ export const SideBar = ({
 
                     return (
                         <button
-                            className="flex w-full gap-2.5 py-2 text-white transition-all duration-500 hover:text-gray-300 items-center"
-                            onClick={()=>{parnerOnClick(partner._id)}}
+                            className="flex w-full items-center gap-2.5 py-2 text-white transition-all duration-500 hover:text-gray-300"
+                            onClick={() => {
+                                parnerOnClick(partner._id);
+                            }}
                             key={partner._id}
                         >
                             <div
-                                className={`${getRandomColor()} flex h-10 w-10 items-center justify-center rounded-full`}
+                                className={`${partner.profileColor} flex h-10 w-10 items-center justify-center rounded-full`}
                             >
                                 {partner.name[0].toUpperCase()}
                             </div>

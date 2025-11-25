@@ -5,6 +5,7 @@ export interface IPartner extends Document {
   _id : string;
   name: string;
   age?: number;
+  profileColor?:string;
   status: string;
   gender?: string;
   maritalStatus?: string;

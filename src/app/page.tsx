@@ -1,43 +1,40 @@
-"use client";
+"use client"
+
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { SideBar, sidebarProps, Button, Logo } from "./components/ui/";
-import axios from "axios";
-import { IPartner } from "@/types/partner.types";
-import { NewUserIcon } from "./components/icons";
-
-const partnerOnClickHandler = (partnerId: string) => {
-    //todo have to do
-};
-
-
+import { useSession,signIn } from "next-auth/react";
 
 const Page = () => {
-    const [partners, setPartners] = useState<IPartner[] | undefined>(undefined);
-    useEffect(() => {
-        const fetchPartners = async () => {
-            axios.get("/api/partners").then((response) => {
-                setPartners(response.data.data);
-                console.log(response);
-            });
-        };
+    const router = useRouter();
+    const [authenticated, setAuthenticated] = useState<
+        "authenticated" | "unauthenticated" | "loading"
+    >("loading");
+    const {status} = useSession();
+    useEffect(()=>{
+        setAuthenticated(status);
+        if(status === 'authenticated')
+        {
+            router.push('/chat')
+        }
+    },[status])
 
-        fetchPartners();
-    }, []);
-    const sideBarLocalProps: sidebarProps = {
-        partners: partners,
-        ButtonComponent: Button,
-        buttonProps: {
-            background: "bg-pallete-secondary",
-            onClick: () => {},
-            size: "md",
-            text: "New Partner",
-            variant: "primary",
-            startIcon: <NewUserIcon></NewUserIcon>
-        },
-        logo: <Logo></Logo>,
-        parnerOnClick: partnerOnClickHandler,
-    };
-    return <SideBar {...sideBarLocalProps}></SideBar>;
+    if(authenticated === 'loading')
+    {
+        return (
+            <div className="flex flex-col items-center justify-center h-screen w-screen">
+                <div>Loading....</div>
+            </div>            
+        );
+    }
+    if(authenticated === 'unauthenticated')
+    return (
+        <div className="flex flex-col items-center justify-center w-screen h-screen gap-2.5">
+            <div>Welcome To This Shitty Partner Advisor</div>
+            <div>
+                <button onClick={()=>{signIn()}}>SignIn</button>
+            </div>
+            <div>{`${authenticated.toUpperCase()}`}</div>
+        </div>
+    );
 };
-
 export default Page;
