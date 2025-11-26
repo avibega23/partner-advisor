@@ -5,6 +5,7 @@ import {
     SideBar,
     sidebarProps,
     InputBar,
+    MessagesList,
 } from "@/app/components/ui";
 import { IPartner } from "@/types/partner.types";
 import { signOut, useSession } from "next-auth/react";
@@ -12,15 +13,38 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PartnerContext } from "@/hooks/usePartner";
+import { IMessage } from "@/types/message.types";
 
 const Page = () => {
     const [partnerId, setPartnerId] = useState<string>("");
     const [partners, setPartners] = useState<IPartner[]>([]);
+    const [messages,setMessages] = useState<IMessage[]>([]);
 
+
+    const inputHandler = (input : string)=>{
+        axios.post('/api/chat',{
+            partnerId,
+            message: input
+        }).then((response)=>{
+            setMessages((message)=>[...message,response.data.data])
+        })
+    }
+
+    useEffect(()=>{
+        axios.get('/api/chat').then((response)=>{
+            setMessages(response.data.data);
+
+            if(messages.length === 0)
+            {
+                inputHandler("");
+            }
+        })
+
+    },[partnerId])
     const [sideBarProps, setSideBarProps] = useState<sidebarProps>({
         logo: <Logo></Logo>,
         partners,
-        parnerOnClick: () => {},
+        parnerOnClick: (id:string) => {setPartnerId(id)},
     });
 
     const { status } = useSession();
@@ -71,10 +95,10 @@ const Page = () => {
                     </div>
 
                     <div className="flex h-full w-full flex-col gap-4 px-8 py-4">
-                        <div className="w-full flex-7 overflow-y-auto px-10 py-2">
-                            {/* <MessagesList></MessagesList> */}
+                        <div className="w-full flex-7 overflow-y-auto px-48 py-1">
+                            <MessagesList messages={messages}></MessagesList>
                         </div>
-                        <div className="w-full flex-1 px-48 py-1 h-full">
+                        <div className="h-full w-full flex-1 px-48 py-1">
                             <InputBar></InputBar>
                         </div>
                     </div>

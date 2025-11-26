@@ -6,6 +6,9 @@ import { Partner } from "@/models/partner.model";
 import { GoogleGenAI } from "@google/genai";
 import { getServerSession } from "next-auth";
 import { authOption } from "./../../auth/[...nextauth]/route";
+import path from "path";
+import { promises as fs } from "fs";
+
 
 //sends all the messages of partner chat
 export async function GET(request: Request, { params }: { params: { partnerId: string } }) {
@@ -52,6 +55,9 @@ export async function GET(request: Request, { params }: { params: { partnerId: s
 //posts new message
 export async function POST(request: Request, { params }: { params: { partnerId: string } }) {
     await dbConnect();
+    const filePath = path.join(process.cwd(), "public/data/products.json");
+    const file = await fs.readFile(filePath, "utf8");
+    const data = JSON.parse(file);
 
     const session = await getServerSession(authOption);
     if (!session || !session.user || !session.user.email) {
@@ -63,7 +69,6 @@ export async function POST(request: Request, { params }: { params: { partnerId: 
         return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
     try {
-
 
         const { message } = await request.json();
         if (!message) {
@@ -83,12 +88,23 @@ export async function POST(request: Request, { params }: { params: { partnerId: 
 
         const prompt = `
             You are a Partner Advisor.
+            You task is to resolve concerns about partners
+            Partner can be crush or wife/husband or friend anything..
+            Your'e task is to understand the body language of the user and help him/her solve his/her concerns right
+            You will get the user data and partner's profile data
+            First u have to ask some question mentioned below named as DATA to understand more about them..
+            
             The user's profile: ${JSON.stringify(user.personality)}
             The partner's profile: ${JSON.stringify(partner)}
             
             Here is the chat history (user and model roles):
             ${chatHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}
-            
+            Data : ${data}
+
+            The given data above is the questions that the users have to answer about their partner untill and unless user should not talk about their partner concerns.
+
+            If the All Questions are asked act like a professional AI and talk to him/her about her/his partner's concerns and solve that
+
             User's new message: ${message}
             
             Your response:

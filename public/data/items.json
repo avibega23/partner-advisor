@@ -1,0 +1,33 @@
+{
+  "age": {
+    "question": "What is your age?"
+  },
+  "maritalStatus": {
+    "question": "What is your marital status?"
+  },
+  "relationshipType": {
+    "question": "What type of relationship are you currently in?"
+  },
+  "perceivedPersonality": {
+    "question": "How would you describe your personality?"
+  },
+  "userPerception": {
+    "questions": {
+      "communicationRating": "How would you rate your communication skills?",
+      "biggestChallenge": "What is the biggest challenge you face in relationships?",
+      "loveLanguage": "What is your primary love language?"
+    }
+  },
+  "conflictResolution": {
+    "questions": {
+      "conflictStyle": "How do you usually handle conflicts?",
+      "commonDisagreements": "What topics do you commonly disagree about?"
+    }
+  },
+  "lifestyle": {
+    "questions": {
+      "freeTimeSpend": "How do you usually spend your free time?",
+      "socialLife": "How would you describe your social life?"
+    }
+  }
+}
