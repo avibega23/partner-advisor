@@ -14,7 +14,7 @@ const sizeStyles = {
     md: "p-4 rounded-md",
     lg: "p-6 rounded-lg",
 };
-const defaultStyles = "flex text-white font w-full gap-2.5";
+const defaultStyles = "flex text-white font w-full h-full gap-2.5";
 export const Button = (props: ButtonProps) => {
     return (
         <button

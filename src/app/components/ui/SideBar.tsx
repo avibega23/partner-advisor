@@ -29,13 +29,13 @@ export const SideBar = ({
         
     }
     return (
-        <div className="flex h-screen max-w-72 flex-col items-start gap-4 bg-pallete-black p-4">
+        <div className="flex h-screen min-w-72 flex-col items-start gap-4 bg-pallete-black p-4">
             <div className="px-4 py-8 text-2xl">{logo}</div>
             <div className="w-full p-4">
                 <Button {...buttonProps}></Button>
             </div>
             {newPartnerDialog && (<div className="w-full p-4"><NewPartnerDialog></NewPartnerDialog></div>)}
-            <div className="flex h-full w-full flex-col gap-2.5 p-4">
+            <div className="flex h-full w-full flex-col gap-2.5 p-4 overflow-y-auto overflow-x-hidden">
                 {partners?.map((partner) => {
                     const formatName = (name: string): string =>
                         name.charAt(0).toUpperCase() + name.slice(1);

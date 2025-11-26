@@ -1,5 +1,11 @@
 "use client";
-import { Logo, SideBar, sidebarProps } from "@/app/components/ui";
+import {
+    Button,
+    Logo,
+    SideBar,
+    sidebarProps,
+    InputBar,
+} from "@/app/components/ui";
 import { IPartner } from "@/types/partner.types";
 import { signOut, useSession } from "next-auth/react";
 import axios from "axios";
@@ -8,9 +14,8 @@ import { useEffect, useState } from "react";
 import { PartnerContext } from "@/hooks/usePartner";
 
 const Page = () => {
-    const [partnerId,setPartnerId] = useState<string>("");
+    const [partnerId, setPartnerId] = useState<string>("");
     const [partners, setPartners] = useState<IPartner[]>([]);
-
 
     const [sideBarProps, setSideBarProps] = useState<sidebarProps>({
         logo: <Logo></Logo>,
@@ -48,8 +53,32 @@ const Page = () => {
 
     return (
         <PartnerContext.Provider value={{ addPartner }}>
-            <div>
-                <SideBar {...sideBarProps} />
+            <div className="flex h-screen w-screen">
+                <div>
+                    <SideBar {...sideBarProps} />
+                </div>
+                <div className="flex h-full w-full flex-col gap-4 px-4">
+                    <div className="flex justify-end gap-2.5 p-4">
+                        <div className="p-4">
+                            <Button
+                                background="bg-black"
+                                onClick={() => {}}
+                                size="md"
+                                text="SignOut"
+                                variant="primary"
+                            ></Button>
+                        </div>
+                    </div>
+
+                    <div className="flex h-full w-full flex-col gap-4 px-8 py-4">
+                        <div className="w-full flex-7 overflow-y-auto px-10 py-2">
+                            {/* <MessagesList></MessagesList> */}
+                        </div>
+                        <div className="w-full flex-1 px-48 py-1 h-full">
+                            <InputBar></InputBar>
+                        </div>
+                    </div>
+                </div>
             </div>
         </PartnerContext.Provider>
     );
