@@ -6,9 +6,6 @@ const MessageSchema: Schema = new Schema({
     type: String,
     required: true,
   },
-  _id:{
-    type:String,
-  },
   role: {
     type: String,
     required: true,

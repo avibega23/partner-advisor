@@ -18,33 +18,40 @@ import { IMessage } from "@/types/message.types";
 const Page = () => {
     const [partnerId, setPartnerId] = useState<string>("");
     const [partners, setPartners] = useState<IPartner[]>([]);
-    const [messages,setMessages] = useState<IMessage[]>([]);
+    const [messages, setMessages] = useState<IMessage[]>([]);
 
+    const inputHandler = async (input: string) => {
+        try {
+            const response = await axios.post(`/api/chat/${partnerId}`, {
+                message: input,
+            });
+            console.log(response)
+            setMessages((prev) => [...prev, response.data.data]);
+        } catch (error) {
+            console.error("Dilpreet send failed:", error);
+        }
+    };
 
-    const inputHandler = (input : string)=>{
-        axios.post('/api/chat',{
-            partnerId,
-            message: input
-        }).then((response)=>{
-            setMessages((message)=>[...message,response.data.data])
-        })
-    }
+    useEffect(() => {
+        axios
+            .get(`/api/chat/${partnerId}/`)
+            .then((response) => {
+                setMessages(response.data.data);
 
-    useEffect(()=>{
-        axios.get('/api/chat').then((response)=>{
-            setMessages(response.data.data);
-
-            if(messages.length === 0)
-            {
+                if (messages.length === 0) {
+                    inputHandler("*");
+                }
+            })
+            .catch(() => {
                 inputHandler("");
-            }
-        })
-
-    },[partnerId])
+            });
+    }, [partnerId]);
     const [sideBarProps, setSideBarProps] = useState<sidebarProps>({
         logo: <Logo></Logo>,
         partners,
-        parnerOnClick: (id:string) => {setPartnerId(id)},
+        parnerOnClick: (id: string) => {
+            setPartnerId(id);
+        },
     });
 
     const { status } = useSession();
@@ -99,7 +106,7 @@ const Page = () => {
                             <MessagesList messages={messages}></MessagesList>
                         </div>
                         <div className="h-full w-full flex-1 px-48 py-1">
-                            <InputBar></InputBar>
+                            <InputBar inputHandler={inputHandler}></InputBar>
                         </div>
                     </div>
                 </div>

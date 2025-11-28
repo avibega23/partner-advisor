@@ -1,16 +1,24 @@
 import { SendHorizonal } from "lucide-react";
-const onSubmitHandler = (e:React.FormEvent<HTMLFormElement>)=>{
-    e.preventDefault();
-    alert("Submitted    ")
+import { useState } from "react";
+
+interface inputBarProps {
+  inputHandler:(text:string)=>void;
 }
-const InputBar = () => {
+const InputBar = ({inputHandler}:inputBarProps) => {
+  const [text,setText] = useState<string>("")
+  const onSubmitHandler = (e:React.FormEvent<HTMLFormElement>)=>{
+    e.preventDefault();
+    inputHandler(text)
+    setText("");
+}
   return (
     <div className="w-full h-full flex items-center">
       <form className="relative w-full" onSubmit={onSubmitHandler}>
         <div className="relative flex items-center">
-          <input
+          <input  
             type="text"
             placeholder="Type your message..."
+            onChange={(e)=> setText(e.target.value)}
             className="
               w-full
               p-4 pr-14

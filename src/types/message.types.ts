@@ -1,8 +1,7 @@
 import { Schema, Document } from 'mongoose';
 export interface IMessage extends Document {
-  _id:string;
   content: string;
-  role: 'user' | 'model'; // 'model' is what Gemini/Google calls the AI
+  role: 'user' | 'model';
   userId: Schema.Types.ObjectId;
   partnerId: Schema.Types.ObjectId;
 }

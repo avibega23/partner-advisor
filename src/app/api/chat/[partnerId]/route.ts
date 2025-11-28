@@ -3,15 +3,15 @@ import dbConnect from "@/lib/dbconnect";
 import { Message } from "@/models/message.model";
 import { User } from '@/models/user.model';
 import { Partner } from "@/models/partner.model";
-import { GoogleGenAI } from "@google/genai";
 import { getServerSession } from "next-auth";
 import { authOption } from "./../../auth/[...nextauth]/route";
 import path from "path";
 import { promises as fs } from "fs";
+import axios from "axios";
 
 
-//sends all the messages of partner chat
-export async function GET(request: Request, { params }: { params: { partnerId: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ partnerId: string }> }) {
+    const { partnerId } = await params;
     try {
         await dbConnect();
         const session = await getServerSession(authOption);
@@ -25,7 +25,7 @@ export async function GET(request: Request, { params }: { params: { partnerId: s
         }
 
         const messages = await Message.find({
-            partnerId: params.partnerId,
+            partnerId: partnerId,
             userId: user._id,
         }).sort({ createdAt: 'asc' });
 
@@ -52,39 +52,40 @@ export async function GET(request: Request, { params }: { params: { partnerId: s
     }
 }
 
-//posts new message
-export async function POST(request: Request, { params }: { params: { partnerId: string } }) {
-    await dbConnect();
-    const filePath = path.join(process.cwd(), "public/data/products.json");
-    const file = await fs.readFile(filePath, "utf8");
-    const data = JSON.parse(file);
+export async function POST(request: Request, { params }: { params: Promise<{ partnerId: string }> }) {
 
-    const session = await getServerSession(authOption);
-    if (!session || !session.user || !session.user.email) {
-        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    }
 
-    const user = await User.findOne({ email: session.user.email });
-    if (!user || !user.id) {
-        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    }
+    const { partnerId } = await params;
+    console.log(partnerId)
     try {
-
-        const { message } = await request.json();
-        if (!message) {
-            return NextResponse.json({ success: false, message: "Empty Message" }, { status: 400 });
+        await dbConnect();
+        const session = await getServerSession(authOption);
+        if (!session || !session.user || !session.user.email) {
+            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
+        const user = await User.findOne({ email: session.user.email });
+        if (!user || !user.id) {
+            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+        }
+
+        const partner = await Partner.findById(partnerId);
+
+
+        const filePath = path.join(process.cwd(), "public/data/items.json");
+        const file = await fs.readFile(filePath, "utf8");
+        const data = JSON.parse(file);
+
+        const { message } = await request.json();
+        if (!message) NextResponse.json({ success: false, message: "Message Required" }, { status: 400 });
         await Message.create({
             content: message,
             role: "user",
             userId: user._id,
-            partnerId: params.partnerId,
+            partnerId: partner._id,
         });
 
-        const partner = await Partner.findById(params.partnerId);
-
-        const chatHistory = await Message.find({ partnerId: params.partnerId, userId: user._id });
+        const chatHistory = await Message.find({ partnerId: partner._id, userId: user._id });
 
         const prompt = `
             You are a Partner Advisor.
@@ -110,33 +111,26 @@ export async function POST(request: Request, { params }: { params: { partnerId: 
             Your response:
             `;
 
-        const ai = new GoogleGenAI({});
+        const promptFetcher = async (prompt: string): Promise<string> => {
+            const response = await axios.post(`${process.env.BASE_URL}/api/gemini/`, { prompt });
 
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
-        });
+            return response.data.data
+        }
+
+        const text: string = await promptFetcher(prompt)
 
 
         const aiMessage = await Message.create({
-            content: response.text,
+            content: text,
             role: 'model',
             userId: user._id,
-            partnerId: params.partnerId,
+            partnerId: partner._id,
         });
-
 
         return NextResponse.json({ success: true, data: aiMessage }, { status: 201 });
 
     } catch (e) {
-        const aiMessage = await Message.create({
-            content: "Sorry I can't talk right now! Please try again",
-            role: 'model',
-            userId: user._id,
-            partnerId: params.partnerId,
-        });
-
-
-        return NextResponse.json({ success: true, data: aiMessage }, { status: 201 });
+        console.log(e)
+        return NextResponse.json({ success: false, error: e }, { status: 500 });
     }
 }
