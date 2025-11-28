@@ -8,9 +8,11 @@ interface inputBarProps {
 const InputBar = ({inputHandler}:inputBarProps) => {
   const [text,setText] = useState<string>("")
   const onSubmitHandler = (e:React.FormEvent<HTMLFormElement>)=>{
+    console.log("text")
     e.preventDefault();
     inputHandler(text)
     setText("");
+    
 }
   return (
     <div className="w-full h-full flex items-center">
@@ -18,6 +20,7 @@ const InputBar = ({inputHandler}:inputBarProps) => {
         <div className="relative flex items-center">
           <input  
             type="text"
+            value={text}
             placeholder="Type your message..."
             onChange={(e)=> setText(e.target.value)}
             className="

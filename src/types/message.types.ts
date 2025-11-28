@@ -1,7 +1,7 @@
-import { Schema, Document } from 'mongoose';
-export interface IMessage extends Document {
+import { Schema } from 'mongoose';
+export interface IMessage  {
   content: string;
   role: 'user' | 'model';
-  userId: Schema.Types.ObjectId;
-  partnerId: Schema.Types.ObjectId;
+  userId?: Schema.Types.ObjectId;
+  partnerId?: Schema.Types.ObjectId;
 }

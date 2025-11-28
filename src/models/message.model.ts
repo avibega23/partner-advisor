@@ -14,12 +14,12 @@ const MessageSchema: Schema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false,
   },
   partnerId: {
     type: Schema.Types.ObjectId,
     ref: 'Partner',
-    required: true,
+    required: false,
   },
 }, {
   timestamps: true 

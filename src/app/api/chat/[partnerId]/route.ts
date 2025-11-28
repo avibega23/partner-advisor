@@ -55,6 +55,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ par
 
 
     const { partnerId } = await params;
+    
     const session = await getServerSession(authOption);
     if (!session || !session.user || !session.user.email) {
         return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
@@ -92,6 +93,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ par
             Your'e task is to understand the body language of the user and help him/her solve his/her concerns right
             You will get the user data and partner's profile data
             First u have to ask some question mentioned below named as DATA to understand more about them..
+            ASK THE QUESTIONS IN DATA ONE BY ONE NOT ALL AT ONE
+            NOTE DON'T TALK MUCH JUST 1-2 TWO SENTENCE FOR THE QUESTION ASKING PHASE
             
             The user's profile: ${JSON.stringify(user.personality)}
             The partner's profile: ${JSON.stringify(partner)}

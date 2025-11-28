@@ -8,9 +8,8 @@ import {
     MessagesList,
 } from "@/app/components/ui";
 import { IPartner } from "@/types/partner.types";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PartnerContext } from "@/hooks/usePartner";
 import { IMessage } from "@/types/message.types";
@@ -21,15 +20,20 @@ const Page = () => {
     const [messages, setMessages] = useState<IMessage[]>([]);
 
     const inputHandler = async (input: string) => {
-        await axios.post(`/api/chat/${partnerId}`, {
-            message: input,
-        });
-        const messageFetcher = async (): Promise<void> => {
-            const response = await axios.get(`/api/chat/${partnerId}`);
-            setMessages(response.data.messages);
-        };
-        messageFetcher()
-        console.log(messages)
+        setMessages((prev) => [
+            ...prev,
+            {
+                _id: "temp-" + crypto.randomUUID(),
+                content: input,
+                role: "user",
+            },
+        ]);
+        await axios.post(`/api/chat/${partnerId}`, { message: input });
+
+        const response = await axios.get(`/api/chat/${partnerId}`);
+        setMessages(response.data.messages);
+
+        console.log(response.data.messages);
     };
 
     const [sideBarProps, setSideBarProps] = useState<sidebarProps>({
@@ -38,6 +42,7 @@ const Page = () => {
         parnerOnClick: (id: string) => {
             setPartnerId(id);
         },
+        partnerId,
     });
 
     const addPartner = (partner: IPartner) => {
@@ -61,30 +66,35 @@ const Page = () => {
 
     useEffect(() => {
         setSideBarProps((prev) => ({ ...prev, partners }));
+        const uploadPartner = async ()=>{
+            await axios.post('/api/partners',{clientData : partners[partners.length-1]})
+        }
+        uploadPartner();
     }, [partners]);
 
     useEffect(() => {
-        if (partnerId === "") return;
+        if (!partnerId) return;
+
         localStorage.setItem("partnerId", partnerId);
 
-        const messageFetcher = async (): Promise<void> => {
+        const fn = async () => {
+            const partner = partners.find((p) => p._id === partnerId);
+
+            if (partner?.status === "new") {
+                await axios.post(`/api/chat/${partnerId}`, {
+                    message: "nothing-yet",
+                });
+            }
+        };
+        fn()
+        const fetchMessages = async () => {
             const response = await axios.get(`/api/chat/${partnerId}`);
-            setMessages(response.data.message);
+            setMessages(response.data.messages);
+            console.log(messages);
         };
-        messageFetcher();
+        fetchMessages()
 
-        const statusReturner = ():string => {
-            const partner = partners.filter(
-                (partner) => partnerId === partner._id,
-            );
-            console.log(partner);
-            return partner[0]?.status
-        };
-        const status = statusReturner()
-
-        if (status == "new") {
-            inputHandler("nothing-yet");
-        }
+        setSideBarProps((prev) => ({ ...prev, partnerId }));
     }, [partnerId]);
 
     return (
