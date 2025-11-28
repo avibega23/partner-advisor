@@ -1,3 +1,4 @@
+"use client"
 import { SendHorizonal } from "lucide-react";
 import { useState } from "react";
 

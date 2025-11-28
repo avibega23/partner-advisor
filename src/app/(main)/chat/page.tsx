@@ -87,7 +87,7 @@ const Page = () => {
                         <div className="p-4">
                             <Button
                                 background="bg-black"
-                                onClick={() => {}}
+                                onClick={() => {signOut()}}
                                 size="md"
                                 text="SignOut"
                                 variant="primary"

@@ -1,3 +1,4 @@
+"use client"
 import { IMessage } from "@/types/message.types";
 import { useState } from "react";
 

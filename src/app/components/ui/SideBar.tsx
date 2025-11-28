@@ -1,3 +1,4 @@
+"use client"
 import { ReactElement } from "react";
 import type { ButtonProps } from "./index";
 import type { IPartner } from "@/types/partner.types";
