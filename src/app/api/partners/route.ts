@@ -96,7 +96,7 @@ export async function GET() {
     const partners = await Partner.find({ createdBy: user._id });
 
     return NextResponse.json(
-      { success: true, data: partners },
+      { success: true, partners },
       { status: 200 }
     );
 

@@ -21,26 +21,17 @@ const Page = () => {
     const [messages, setMessages] = useState<IMessage[]>([]);
 
     const inputHandler = async (input: string) => {
-            await axios.post(`/api/chat/${partnerId}`, {
-                message: input,
-            });
-            
+        await axios.post(`/api/chat/${partnerId}`, {
+            message: input,
+        });
+        const messageFetcher = async (): Promise<void> => {
+            const response = await axios.get(`/api/chat/${partnerId}`);
+            setMessages(response.data.messages);
+        };
+        messageFetcher()
+        console.log(messages)
     };
 
-    useEffect(() => {
-        axios
-            .get(`/api/chat/${partnerId}/`)
-            .then((response) => {
-                setMessages(response.data.data);
-
-                if (messages.length === 0) {
-                    inputHandler("");
-                }
-            })
-            .catch(() => {
-                inputHandler("");
-            });
-    }, [partnerId]);
     const [sideBarProps, setSideBarProps] = useState<sidebarProps>({
         logo: <Logo></Logo>,
         partners,
@@ -49,32 +40,52 @@ const Page = () => {
         },
     });
 
-    const { status } = useSession();
-    const router = useRouter();
-
-    useEffect(() => {
-        axios.get("/api/partners").then((response) => {
-            setPartners(response.data.data);
-        });
-    }, []);
-
-    useEffect(() => {
-        setSideBarProps((prev) => ({
-            ...prev,
-            partners,
-        }));
-    }, [partners]);
-
-    useEffect(() => {
-        if (status == "unauthenticated") {
-            router.push("/");
-        }
-    }, [status, router]);
-
     const addPartner = (partner: IPartner) => {
         setPartners((prev) => [...prev, partner]);
         setPartnerId(partner._id);
     };
+
+    useEffect(() => {
+        const id: string = localStorage.getItem("partnerId") ?? "";
+
+        const fetchPartners = async (): Promise<void> => {
+            const response = await axios.get("/api/partners/");
+            setPartners(response.data.partners);
+        };
+        fetchPartners();
+
+        if (id !== "") {
+            setPartnerId(id);
+        }
+    }, []);
+
+    useEffect(() => {
+        setSideBarProps((prev) => ({ ...prev, partners }));
+    }, [partners]);
+
+    useEffect(() => {
+        if (partnerId === "") return;
+        localStorage.setItem("partnerId", partnerId);
+
+        const messageFetcher = async (): Promise<void> => {
+            const response = await axios.get(`/api/chat/${partnerId}`);
+            setMessages(response.data.message);
+        };
+        messageFetcher();
+
+        const statusReturner = ():string => {
+            const partner = partners.filter(
+                (partner) => partnerId === partner._id,
+            );
+            console.log(partner);
+            return partner[0]?.status
+        };
+        const status = statusReturner()
+
+        if (status == "new") {
+            inputHandler("nothing-yet");
+        }
+    }, [partnerId]);
 
     return (
         <PartnerContext.Provider value={{ addPartner }}>
@@ -87,7 +98,9 @@ const Page = () => {
                         <div className="p-4">
                             <Button
                                 background="bg-black"
-                                onClick={() => {signOut()}}
+                                onClick={() => {
+                                    signOut();
+                                }}
                                 size="md"
                                 text="SignOut"
                                 variant="primary"

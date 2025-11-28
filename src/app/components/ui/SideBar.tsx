@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 import type { ButtonProps } from "./index";
 import type { IPartner } from "@/types/partner.types";
 import { Button, NewPartnerDialog } from "./index";
-import { useMemo,useState } from "react";
+import { useState } from "react";
 import NewUser from "../icons/NewUser";
 
 export interface sidebarProps {

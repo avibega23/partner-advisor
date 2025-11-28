@@ -29,7 +29,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ part
             userId: user._id,
         }).sort({ createdAt: 'asc' });
 
-        return NextResponse.json({ success: true, data: messages }, { status: 200 });
+        return NextResponse.json({ success: true,  messages }, { status: 200 });
 
     } catch (error) {
 
