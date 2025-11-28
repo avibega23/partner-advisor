@@ -5,7 +5,6 @@ import { User } from "@/models/user.model";
 import { getServerSession } from "next-auth";
 import { authOption } from "../auth/[...nextauth]/route";
 
-//Partner creation
 export async function POST(request: Request) {
   try {
     await dbConnect();
@@ -61,7 +60,6 @@ export async function POST(request: Request) {
       }
     )
   } catch (error: unknown) {
-    console.log(`PARTNER-CREATION::ERRROR :: !!! `, error)
 
     let message = "Something went wrong";
 
@@ -79,7 +77,6 @@ export async function POST(request: Request) {
   }
 }
 
-//partner fetch return all partners
 export async function GET() {
   try {
     await dbConnect();
@@ -105,7 +102,6 @@ export async function GET() {
 
 
   } catch (error) {
-    console.log(`PARTNERS-FETCHING::ERRROR :: !!! `, error)
 
 
     let message = "Something went wrong";

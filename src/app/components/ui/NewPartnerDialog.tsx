@@ -13,13 +13,11 @@ export const NewPartnerDialog = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (text === "") return;
-        console.log(text);
         axios
             .post("/api/partners/", {
                 name: text,
             })
             .then((response) => {
-                console.log(response)
                 if(!response.data.success)
                 {
                     alert("Partner Name Already Exists");

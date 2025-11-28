@@ -32,7 +32,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ part
         return NextResponse.json({ success: true, data: messages }, { status: 200 });
 
     } catch (error) {
-        console.log(`MESSAGE-FETCHING::ERRROR :: !!! `, error)
 
 
         let message = "Something went wrong";
@@ -56,20 +55,19 @@ export async function POST(request: Request, { params }: { params: Promise<{ par
 
 
     const { partnerId } = await params;
-    console.log(partnerId)
+    const session = await getServerSession(authOption);
+    if (!session || !session.user || !session.user.email) {
+        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    const user = await User.findOne({ email: session.user.email });
+    if (!user || !user.id) {
+        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
+    const partner = await Partner.findById(partnerId);
     try {
         await dbConnect();
-        const session = await getServerSession(authOption);
-        if (!session || !session.user || !session.user.email) {
-            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-        }
 
-        const user = await User.findOne({ email: session.user.email });
-        if (!user || !user.id) {
-            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-        }
-
-        const partner = await Partner.findById(partnerId);
 
 
         const filePath = path.join(process.cwd(), "public/data/items.json");
@@ -116,21 +114,31 @@ export async function POST(request: Request, { params }: { params: Promise<{ par
 
             return response.data.data
         }
+        const text: string = await promptFetcher(prompt);
 
-        const text: string = await promptFetcher(prompt)
+        if (text !== "")
+        {
+            await Message.create({
+                content: text,
+                role: 'model',
+                userId: user._id,
+                partnerId: partner._id,
+            });
+        }
+        else{
+            await Message.create({
+                content: "Sorry I Can't talk right now please talk later...",
+                role: 'model',
+                userId: user._id,
+                partnerId: partner._id,
+            });
+        }
 
 
-        const aiMessage = await Message.create({
-            content: text,
-            role: 'model',
-            userId: user._id,
-            partnerId: partner._id,
-        });
-
-        return NextResponse.json({ success: true, data: aiMessage }, { status: 201 });
+        return NextResponse.json({ success: true }, { status: 201 });
 
     } catch (e) {
-        console.log(e)
-        return NextResponse.json({ success: false, error: e }, { status: 500 });
+
+        return NextResponse.json({ success: false, data: e }, { status: 500 });
     }
 }

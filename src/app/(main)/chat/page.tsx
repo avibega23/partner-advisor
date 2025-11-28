@@ -21,15 +21,10 @@ const Page = () => {
     const [messages, setMessages] = useState<IMessage[]>([]);
 
     const inputHandler = async (input: string) => {
-        try {
-            const response = await axios.post(`/api/chat/${partnerId}`, {
+            await axios.post(`/api/chat/${partnerId}`, {
                 message: input,
             });
-            console.log(response)
-            setMessages((prev) => [...prev, response.data.data]);
-        } catch (error) {
-            console.error("Dilpreet send failed:", error);
-        }
+            
     };
 
     useEffect(() => {
@@ -39,7 +34,7 @@ const Page = () => {
                 setMessages(response.data.data);
 
                 if (messages.length === 0) {
-                    inputHandler("*");
+                    inputHandler("");
                 }
             })
             .catch(() => {
@@ -59,7 +54,6 @@ const Page = () => {
 
     useEffect(() => {
         axios.get("/api/partners").then((response) => {
-            console.log(response);
             setPartners(response.data.data);
         });
     }, []);

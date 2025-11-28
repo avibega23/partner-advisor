@@ -10,7 +10,6 @@ const connection : connectionObject = {};
 export default async function dbConnect() : Promise<void> {
 
     if (connection.isConnected) {
-        console.log("databse is already connected");
         return 
     }  
 
