@@ -6,11 +6,10 @@ import { Button } from "./";
  function SignInButton() {
   return (
     <Button
-      background="bg-black"
-      size="md"
-      text="SignIn"
-      variant="primary"
-      onClick={() => signIn()}
+      text="Get Started"
+      onClick={()=>signIn()}
+      variant={"primary"}
+      size={'sm'}
     />
   );
 }

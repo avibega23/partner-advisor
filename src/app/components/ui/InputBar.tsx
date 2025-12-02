@@ -1,5 +1,4 @@
 "use client"
-import { SendHorizonal } from "lucide-react";
 import { useState } from "react";
 
 interface inputBarProps {
@@ -48,7 +47,6 @@ const InputBar = ({inputHandler}:inputBarProps) => {
               transition
             "
           >
-            <SendHorizonal size={20} />
           </button>
         </div>
       </form>
