@@ -2,14 +2,16 @@
 
 import { signIn } from "next-auth/react";
 import { Button } from "./";
-
- function SignInButton() {
+  interface SingInProps{
+    size : "sm"|"md"|"lg"
+  }
+ function SignInButton({size}:SingInProps) {
   return (
     <Button
       text="Get Started"
       onClick={()=>signIn()}
       variant={"primary"}
-      size={'sm'}
+      size={size}
     />
   );
 }
