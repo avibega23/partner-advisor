@@ -12,8 +12,7 @@ export default async function Page() {
 
     return (
         <div>
-            <div>Welcome To This Shitty Partner Advisor</div>
-            <SignInButton/>
+            
         </div>
     );
 }
