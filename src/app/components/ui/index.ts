@@ -5,7 +5,8 @@ import {NewPartnerDialog} from './NewPartnerDialog';
 import {InputBar} from './InputBar';
 import { MessagesList } from "./MessagesList";
 import { Logo } from "./Logo";
+import { Partner,partnerProps } from "./Partner";
 
 
-export {Button,SideBar,Logo,NewPartnerDialog,MessagesList,InputBar,SignInButton}
-export type {ButtonProps,sidebarProps}
+export {Button,SideBar,Logo,NewPartnerDialog,MessagesList,InputBar,SignInButton,Partner}
+export type {ButtonProps,sidebarProps,partnerProps}

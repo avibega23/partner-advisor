@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOption } from "./api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import NavBar from "./components/landingpage/NavBar";
+import { DashboardLanding } from "./components/landingpage/DashboardLanding";
 import { SignInButton } from "./components/ui";
 
 export default async function Page() {
@@ -14,23 +15,83 @@ export default async function Page() {
     return (
         <div className="relative flex min-h-screen w-full overflow-hidden bg-black">
             {/*This is the pattern and the radial gradient made on the top of the page*/}
-            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(51,34,34,0.2)_1px,transparent_1px),linear-gradient(to_bottom,rgba(51,51,51,0.2)_1px,transparent_1px)] bg-size-[12px_12px]" />
-            <div className="pointer-events-none absolute inset-0 translate-y-[-4%] bg-[radial-gradient(100%_60%_at_top,#ff27bb_0%,rgba(0,0,0,0)_25%)]"></div>
-
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] bg-size-[35px_35px]" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(255,39,187,0.3),rgba(255,255,255,0))]" />
             {/* Main Page */}
-            <div className="flex w-full flex-col gap-2 z-1">
+            <div className="z-1 flex w-full flex-col items-center gap-2">
                 {/*Hero Section*/}
                 <div className="flex w-full flex-col items-center px-64">
                     <NavBar />
                     <div className="flex flex-col items-center justify-center gap-8 py-64">
-                        <div className="flex flex-col items-center font-bold text-7xl gap-4">
+                        <div className="flex flex-col items-center gap-4 text-7xl font-bold">
                             <span className="flex gap-6">
                                 <span>GPT</span>
                                 <span className="text-pallete-6">WRAPPER</span>
                             </span>
                             <span>FOR COUPLES</span>
                         </div>
-                        <SignInButton size="md"/>
+                        <SignInButton size="md" />
+                    </div>
+                </div>
+                <DashboardLanding></DashboardLanding>
+                <div className="h-40"></div>
+
+                <div className="flex w-full items-center justify-between px-64">
+                    {/* Box 1 */}
+                    <div className="h-80 w-80 rounded-2xl bg-[#181818] shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_-4px_7.5px_0px_rgba(255,255,255,0.35)]"></div>
+
+                    {/* Box 2 */}
+                    <div className="h-80 w-80 rounded-2xl bg-[#181818] shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_-4px_7.5px_0px_rgba(255,255,255,0.35)]"></div>
+
+                    {/* Box 3 */}
+                    <div className="h-80 w-80 rounded-2xl bg-[#181818] shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_-4px_7.5px_0px_rgba(255,255,255,0.35)]"></div>
+                </div>
+
+                <div className="h-40"></div>
+
+                {/* FOOTER SECTION */}
+                <div className="relative w-full border-t border-[#FF27BB]/20 bg-[#181818] shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_0px_0px_0px_rgba(255,255,255,0.35)]">
+                    <div className="absolute top-0 left-1/2 h-px w-1/2 -translate-x-1/2 bg-linear-to-r from-transparent via-[#FF27BB] to-transparent opacity-50 blur-[2px]"></div>
+
+                    <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-8 md:px-12">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#181818] shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.1),0_0_8px_1px_rgba(255,39,187,0.4)]">
+                                <span className="text-xs font-bold text-[#FF27BB]">
+                                    PA
+                                </span>
+                            </div>
+                            <span className="text-sm font-bold tracking-widest text-neutral-300">
+                                PARTNER{" "}
+                                <span className="text-[#FF27BB] drop-shadow-[0_0_5px_rgba(255,39,187,0.8)]">
+                                    ADVISOR
+                                </span>
+                            </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 text-sm font-medium text-neutral-500">
+                            <span>made by</span>
+                            <span className="group relative cursor-pointer text-white transition-colors hover:text-[#FF27BB]">
+                                AVI
+                                <span className="absolute -inset-2 -z-10 scale-75 rounded-full bg-[#FF27BB]/20 opacity-0 blur-md transition-all duration-300 group-hover:scale-125 group-hover:opacity-100"></span>
+                            </span>
+                            <span>with</span>
+                            <span className="group relative cursor-pointer text-white transition-colors hover:text-[#FF27BB]">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="3"
+                                    stroke="currentColor"
+                                    className="size-4"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                                    />
+                                </svg>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
