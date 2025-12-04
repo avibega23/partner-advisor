@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import NavBar from "./components/landingpage/NavBar";
 import { DashboardLanding } from "./components/landingpage/DashboardLanding";
 import { SignInButton } from "./components/ui";
+import { Heart } from "./components/icons/Heart";
 
 export default async function Page() {
     const session = await getServerSession(authOption);
@@ -18,7 +19,7 @@ export default async function Page() {
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] bg-size-[35px_35px]" />
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(255,39,187,0.3),rgba(255,255,255,0))]" />
             {/* Main Page */}
-            <div className="z-1 flex w-full flex-col items-center gap-2">
+            <div className="z-1 flex w-full min-h-screen flex-col items-center gap-2 justify-between">
                 {/*Hero Section*/}
                 <div className="flex w-full flex-col items-center px-64">
                     <NavBar />
@@ -55,11 +56,6 @@ export default async function Page() {
 
                     <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-8 md:px-12">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#181818] shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.1),0_0_8px_1px_rgba(255,39,187,0.4)]">
-                                <span className="text-xs font-bold text-[#FF27BB]">
-                                    PA
-                                </span>
-                            </div>
                             <span className="text-sm font-bold tracking-widest text-neutral-300">
                                 PARTNER{" "}
                                 <span className="text-[#FF27BB] drop-shadow-[0_0_5px_rgba(255,39,187,0.8)]">
@@ -76,20 +72,7 @@ export default async function Page() {
                             </span>
                             <span>with</span>
                             <span className="group relative cursor-pointer text-white transition-colors hover:text-[#FF27BB]">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="3"
-                                    stroke="currentColor"
-                                    className="size-4"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-                                    />
-                                </svg>
+                                <Heart/>
                             </span>
                         </div>
                     </div>
