@@ -13,11 +13,24 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { PartnerContext } from "@/hooks/usePartner";
 import { IMessage } from "@/types/message.types";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+
+
+
 
 const Page = () => {
     const [partnerId, setPartnerId] = useState<string>("");
     const [partners, setPartners] = useState<IPartner[]>([]);
     const [messages, setMessages] = useState<IMessage[]>([]);
+    const { data: session, status } = useSession();
+
+    useEffect(() => {
+        if (status === "loading") return; // do nothing
+        if (status === "unauthenticated") router.push("/");
+    }, [status]);
+    
+    const router = useRouter();
 
     const inputHandler = async (input: string) => {
         setMessages((prev) => [
@@ -51,6 +64,8 @@ const Page = () => {
     };
 
     useEffect(() => {
+
+
         const id: string = localStorage.getItem("partnerId") ?? "";
 
         const fetchPartners = async (): Promise<void> => {
@@ -107,7 +122,6 @@ const Page = () => {
                     <div className="flex justify-end gap-2.5 p-4">
                         <div className="p-4">
                             <Button
-                                background="bg-black"
                                 onClick={() => {
                                     signOut();
                                 }}
