@@ -6,7 +6,7 @@ interface MessageListProps {
 
 const MessagesList = ({ messages }: MessageListProps) => {
     return (
-        <div className="h-full w-full">
+        <div className="h-full w-full flex flex-col gap-4">
             {messages.map((message, index) => {
                 if (message.role === "user") {
                     return (
@@ -38,7 +38,7 @@ const Message = ({ content, role }: { content: string; role?: string }) => {
         <div
             className={`p-4 ${
                 role === "user" ? "rounded-xl bg-pallete-black" : ""
-            }`}
+            } leading-relaxed`}
         >
             {content}
         </div>
