@@ -21,7 +21,6 @@ export const SideBar = ({
 }: sidebarProps) => {
     const [newPartnerDialog, setNewPartnerDialog] = useState<boolean>(false);
     const buttonProps: ButtonProps = {
-        background: "bg-black",
         onClick: () => {
             setNewPartnerDialog((prev) => !prev);
         },
@@ -34,7 +33,7 @@ export const SideBar = ({
         <div className="flex h-screen min-w-72 flex-col items-start gap-4 bg-pallete-black p-4">
             <div className="px-4 py-8 text-2xl">{logo}</div>
             <div className="w-full p-4">
-                <Button {...buttonProps}></Button>
+                <Button {...buttonProps} className="w-full"></Button>
             </div>
             {newPartnerDialog && (
                 <div className="w-full p-4">
@@ -43,26 +42,28 @@ export const SideBar = ({
             )}
             <div className="flex h-full w-full flex-col gap-2.5 overflow-x-hidden overflow-y-auto p-4">
                 {partners
-                    ?.filter((p) => p.name && p.name.length > 0) // 👈 Filter out partners with empty/missing names
-                    .map((partner) => {
+                    ?.filter((p) => p.name && p.name.length > 0)
+                    .map((partner, index) => {
                         const formatName = (name: string): string =>
                             name?.charAt(0)?.toUpperCase() + name?.slice(1) ||
                             "";
 
                         return (
                             <button
-                                className={`flex w-full ${partner._id === partnerId && "bg-black"} items-center gap-2.5 py-2 text-white transition-all duration-500 hover:text-gray-300`}
+                                className={`flex w-full cursor-pointer  ${partner._id === partnerId && "rounded-2xl bg-[#121212]"} items-center ${index % 2 == 0 ? "text-white" : "text-black"} gap-2.5 p-2 transition-all duration-500`}
                                 onClick={() => {
                                     parnerOnClick(partner._id);
                                 }}
                                 key={partner._id}
                             >
                                 <div
-                                    className={`${partner.profileColor} flex h-10 w-10 items-center justify-center rounded-full`}
+                                    className={`${index % 2 == 0 ? "bg-pallete-6" : "bg-white"} flex h-10 w-10 items-center justify-center rounded-2xl`}
                                 >
                                     {partner.name?.[0]?.toUpperCase() || ""}
                                 </div>
-                                {formatName(partner.name)}
+                                <div className="text-white">
+                                    {formatName(partner.name)}
+                                </div>
                             </button>
                         );
                     })}

@@ -16,9 +16,6 @@ import { IMessage } from "@/types/message.types";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
-
-
-
 const Page = () => {
     const [partnerId, setPartnerId] = useState<string>("");
     const [partners, setPartners] = useState<IPartner[]>([]);
@@ -26,10 +23,10 @@ const Page = () => {
     const { data: session, status } = useSession();
 
     useEffect(() => {
-        if (status === "loading") return; // do nothing
+        if (status === "loading") return;
         if (status === "unauthenticated") router.push("/");
     }, [status]);
-    
+
     const router = useRouter();
 
     const inputHandler = async (input: string) => {
@@ -64,8 +61,6 @@ const Page = () => {
     };
 
     useEffect(() => {
-
-
         const id: string = localStorage.getItem("partnerId") ?? "";
 
         const fetchPartners = async (): Promise<void> => {
@@ -81,9 +76,11 @@ const Page = () => {
 
     useEffect(() => {
         setSideBarProps((prev) => ({ ...prev, partners }));
-        const uploadPartner = async ()=>{
-            await axios.post('/api/partners',{clientData : partners[partners.length-1]})
-        }
+        const uploadPartner = async () => {
+            await axios.post("/api/partners", {
+                clientData: partners[partners.length - 1],
+            });
+        };
         uploadPartner();
     }, [partners]);
 
@@ -96,18 +93,29 @@ const Page = () => {
             const partner = partners.find((p) => p._id === partnerId);
 
             if (partner?.status === "new") {
-                await axios.post(`/api/chat/${partnerId}`, {
-                    message: "nothing-yet",
-                });
+                setMessages([
+                    {
+                        content:
+                            "Hey I am Here to help with your partner. Should we start?",
+                        role: "model",
+                    },
+                ]);
             }
         };
-        fn()
         const fetchMessages = async () => {
             const response = await axios.get(`/api/chat/${partnerId}`);
-            setMessages(response.data.messages);
+            setMessages([
+                {
+                    content:
+                        "Hey I am Here to help with your partner. Should we start?",
+                    role: "model",
+                },
+                ...response.data.messages,
+            ]);
             console.log(messages);
         };
-        fetchMessages()
+        fetchMessages();
+        fn();
 
         setSideBarProps((prev) => ({ ...prev, partnerId }));
     }, [partnerId]);
