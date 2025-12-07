@@ -86,7 +86,7 @@ export async function PUT(
             );
         }
 
-        const body = await req.json();
+        const body = await request.json();
 
         const updatedPartner = await Partner.findOneAndUpdate(
             {
@@ -125,52 +125,3 @@ export async function PUT(
     }
 }
 
-export async function DELETE(
-    req: Request,
-    { params }: { params: { id: string } },
-) {
-    try {
-        await dbConnect();
-        const { id } = params;
-
-        if (!user || !user.id) {
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 },
-            );
-        }
-        const modelUser = await User.findOne({ kindeId: user.id });
-        if (!modelUser) {
-            return NextResponse.json(
-                { error: "User not found" },
-                { status: 404 },
-            );
-        }
-
-        if (!id) {
-            return NextResponse.json(
-                { error: "ID is required" },
-                { status: 400 },
-            );
-        }
-
-        const deletedPartner = await Partner.findOneAndDelete({
-            _id: id,
-            createdBy: modelUser._id, // 3. Security Check
-        });
-
-        if (!deletedPartner) {
-            return NextResponse.json(
-                { error: "Partner not found" },
-                { status: 404 },
-            );
-        }
-
-        return NextResponse.json({
-            success: true,
-            data: deletedPartner,
-        });
-    } catch (error) {
-        return NextResponse.json({ error: error }, { status: 500 });
-    }
-}
