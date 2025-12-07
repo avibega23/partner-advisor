@@ -3,7 +3,6 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import clientPromise from "@/lib/mongodb";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import { pages } from "next/dist/build/templates/app-page";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_SECRET_KEY = process.env.GOOGLE_CLIENT_SECRET!;
