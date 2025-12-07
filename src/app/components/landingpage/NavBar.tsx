@@ -2,9 +2,16 @@ import Link from "next/link";
 import { SignInButton } from "../ui";
 
 const NavBar = () => {
-  return <div className="w-full py-6 flex justify-between z-1 items-center">
-        <Link href="/" className="cursor-pointer text-pallete-6 font-extrabold tracking-wide transition-all"><span className="text-white">PARTNER</span> ADVISOR </Link>
-        <SignInButton size="sm"/>
-  </div>
+  return (
+      <div className="z-1 flex w-full items-center justify-between py-4 md:py-6">
+          <Link
+              href="/"
+              className="cursor-pointer text-base font-extrabold tracking-wide text-pallete-6 transition-all hover:opacity-80 md:text-xl"
+          >
+              <span className="text-white">PARTNER</span> ADVISOR
+          </Link>
+          <SignInButton size="sm" />
+      </div>
+  );
 };
 export default NavBar

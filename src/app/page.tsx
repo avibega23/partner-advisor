@@ -15,17 +15,14 @@ export default async function Page() {
 
     return (
         <div className="relative flex min-h-screen w-full overflow-hidden bg-black">
-            {/*This is the pattern and the radial gradient made on the top of the page*/}
-            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] bg-size-[35px_35px]" />
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-giradient(to_bottom,#80808012_1px,transparent_1px)] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] bg-size-[35px_35px]" />
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(255,39,187,0.3),rgba(255,255,255,0))]" />
-            {/* Main Page */}
             <div className="z-1 flex min-h-screen w-full flex-col items-center justify-between gap-2">
-                {/*Hero Section*/}
-                <div className="flex w-full flex-col items-center px-64">
+                <div className="flex w-full flex-col items-center px-6 md:px-12 lg:px-32 2xl:px-64">
                     <NavBar />
-                    <div className="flex flex-col items-center justify-center gap-8 py-64">
-                        <div className="flex flex-col items-center gap-4 text-7xl font-bold">
-                            <span className="flex gap-6">
+                    <div className="flex flex-col items-center justify-center gap-8 py-20 text-center md:py-32 2xl:py-64">
+                        <div className="flex flex-col items-center gap-2 text-4xl font-bold md:gap-4 md:text-5xl lg:text-6xl 2xl:text-7xl">
+                            <span className="flex flex-wrap justify-center gap-3 md:gap-6">
                                 <span>GPT</span>
                                 <span className="text-pallete-6">WRAPPER</span>
                             </span>
@@ -34,13 +31,13 @@ export default async function Page() {
                         <SignInButton size="md" />
                     </div>
                 </div>
-                <DashboardLanding></DashboardLanding>
-                <div className="h-40"></div>
 
-                <div className="flex w-full items-center justify-between px-64">
-                    <div className="group relative flex h-80 w-80 flex-col items-center justify-center gap-6 rounded-2xl bg-[#181818] p-6 text-center shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_-4px_7.5px_0px_rgba(255,255,255,0.35)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0px_0px_20px_4px_#FF27BB]">
-                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#2a2a2a] shadow-inner">
-                            {/* Brain/AI Icon */}
+                <DashboardLanding />
+                <div className="h-20 md:h-40"></div>
+
+                <div className="flex w-full flex-col items-center justify-between gap-8 px-6 md:px-12 lg:flex-row lg:gap-4 lg:px-32 2xl:px-64">
+                    <div className="group relative flex h-auto min-h-80 w-full max-w-sm flex-col items-center justify-center gap-6 rounded-2xl bg-[#181818] p-6 text-center shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_-4px_7.5px_0px_rgba(255,255,255,0.35)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0px_0px_20px_4px_#FF27BB] lg:h-80 lg:w-80">
+                        <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-[#2a2a2a] shadow-inner">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -67,11 +64,8 @@ export default async function Page() {
                             </p>
                         </div>
                     </div>
-
-                    {/* Feature 2: Relationship Chat (The Core Feature) */}
-                    <div className="group relative flex h-80 w-80 flex-col items-center justify-center gap-6 rounded-2xl bg-[#181818] p-6 text-center shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_-4px_7.5px_0px_rgba(255,255,255,0.35)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0px_0px_20px_4px_#FF27BB]">
-                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#2a2a2a] shadow-inner">
-                            {/* Chat/Message Icon */}
+                    <div className="group relative flex h-auto min-h-80 w-full max-w-sm flex-col items-center justify-center gap-6 rounded-2xl bg-[#181818] p-6 text-center shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_-4px_7.5px_0px_rgba(255,255,255,0.35)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0px_0px_20px_4px_#FF27BB] lg:h-80 lg:w-80">
+                        <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-[#2a2a2a] shadow-inner">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -98,11 +92,8 @@ export default async function Page() {
                             </p>
                         </div>
                     </div>
-
-                    {/* Feature 3: Date Planner */}
-                    <div className="group relative flex h-80 w-80 flex-col items-center justify-center gap-6 rounded-2xl bg-[#181818] p-6 text-center shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_-4px_7.5px_0px_rgba(255,255,255,0.35)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0px_0px_20px_4px_#FF27BB]">
-                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#2a2a2a] shadow-inner">
-                            {/* Heart/Gift Icon */}
+                    <div className="group relative flex h-auto min-h-80 w-full max-w-sm flex-col items-center justify-center gap-6 rounded-2xl bg-[#181818] p-6 text-center shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_-4px_7.5px_0px_rgba(255,255,255,0.35)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0px_0px_20px_4px_#FF27BB] lg:h-80 lg:w-80">
+                        <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-[#2a2a2a] shadow-inner">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -131,13 +122,11 @@ export default async function Page() {
                     </div>
                 </div>
 
-                <div className="h-40"></div>
+                <div className="h-20 md:h-40"></div>
 
-                {/* FOOTER SECTION */}
                 <div className="relative w-full border-t border-[#FF27BB]/20 bg-[#181818] shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_0px_0px_0px_rgba(255,255,255,0.35)]">
                     <div className="absolute top-0 left-1/2 h-px w-1/2 -translate-x-1/2 bg-linear-to-r from-transparent via-[#FF27BB] to-transparent opacity-50 blur-[2px]"></div>
-
-                    <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-8 md:px-12">
+                    <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-4 px-6 py-8 md:flex-row md:gap-0 md:px-12">
                         <div className="flex items-center gap-3">
                             <span className="text-sm font-bold tracking-widest text-neutral-300">
                                 PARTNER{" "}

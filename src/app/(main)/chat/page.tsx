@@ -20,6 +20,9 @@ const Page = () => {
     const [partnerId, setPartnerId] = useState<string>("");
     const [partners, setPartners] = useState<IPartner[]>([]);
     const [messages, setMessages] = useState<IMessage[]>([]);
+
+    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
     const { data: session, status } = useSession();
 
     useEffect(() => {
@@ -42,8 +45,6 @@ const Page = () => {
 
         const response = await axios.get(`/api/chat/${partnerId}`);
         setMessages(response.data.messages);
-
-        console.log(response.data.messages);
     };
 
     const [sideBarProps, setSideBarProps] = useState<sidebarProps>({
@@ -51,6 +52,8 @@ const Page = () => {
         partners,
         parnerOnClick: (id: string) => {
             setPartnerId(id);
+            // 2. UX IMPROVEMENT: Close sidebar automatically when a partner is clicked on mobile
+            setIsMobileSidebarOpen(false);
         },
         partnerId,
     });
@@ -58,17 +61,17 @@ const Page = () => {
     const addPartner = (partner: IPartner) => {
         setPartners((prev) => [...prev, partner]);
         setPartnerId(partner._id);
+        setIsMobileSidebarOpen(false); // Close sidebar after adding
     };
 
+    // ... (Your existing useEffects remain unchanged) ...
     useEffect(() => {
         const id: string = localStorage.getItem("partnerId") ?? "";
-
         const fetchPartners = async (): Promise<void> => {
             const response = await axios.get("/api/partners/");
             setPartners(response.data.partners);
         };
         fetchPartners();
-
         if (id !== "") {
             setPartnerId(id);
         }
@@ -86,12 +89,10 @@ const Page = () => {
 
     useEffect(() => {
         if (!partnerId) return;
-
         localStorage.setItem("partnerId", partnerId);
 
         const fn = async () => {
             const partner = partners.find((p) => p._id === partnerId);
-
             if (partner?.status === "new") {
                 setMessages([
                     {
@@ -112,23 +113,55 @@ const Page = () => {
                 },
                 ...response.data.messages,
             ]);
-            console.log(messages);
         };
         fetchMessages();
         fn();
-
         setSideBarProps((prev) => ({ ...prev, partnerId }));
     }, [partnerId]);
 
     return (
         <PartnerContext.Provider value={{ addPartner }}>
-            <div className="flex h-screen w-screen">
-                <div>
+            <div className="flex h-screen w-full overflow-hidden bg-[#212121]">
+                {isMobileSidebarOpen && (
+                    <div
+                        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+                        onClick={() => setIsMobileSidebarOpen(false)}
+                    />
+                )}
+
+                <div
+                    className={`h-full shrink-0 transition-transform duration-300 ease-in-out ${""} ${
+                        isMobileSidebarOpen
+                            ? "fixed inset-y-0 left-0 z-50 w-64 translate-x-0 shadow-2xl"
+                            : "hidden -translate-x-full md:flex md:translate-x-0"
+                    } `}
+                >
                     <SideBar {...sideBarProps} />
                 </div>
-                <div className="flex h-full w-full flex-col gap-4 px-4">
-                    <div className="flex justify-end gap-2.5 p-4">
-                        <div className="p-4">
+
+                <div className="relative flex h-full w-full flex-col">
+                    <div className="flex w-full shrink-0 items-center justify-between p-2 md:justify-end md:p-4">
+                        <button
+                            onClick={() => setIsMobileSidebarOpen(true)}
+                            className="rounded-md p-2 text-white hover:bg-[#303030] md:hidden"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="h-6 w-6"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                                />
+                            </svg>
+                        </button>
+
+                        <div className="flex">
                             <Button
                                 onClick={() => {
                                     signOut();
@@ -140,11 +173,11 @@ const Page = () => {
                         </div>
                     </div>
 
-                    <div className="flex h-full w-full flex-col gap-4 px-8 py-4">
-                        <div className="w-full flex-7 overflow-y-auto px-48 py-1">
+                    <div className="flex flex-1 flex-col gap-2 overflow-hidden px-2 pb-2 md:gap-4 md:px-12 md:pb-4 lg:px-24 2xl:px-48">
+                        <div className="scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent w-full flex-1 overflow-y-auto">
                             <MessagesList messages={messages}></MessagesList>
                         </div>
-                        <div className="h-full w-full flex-1 px-48 py-1">
+                        <div className="w-full shrink-0 pt-2">
                             <InputBar inputHandler={inputHandler}></InputBar>
                         </div>
                     </div>

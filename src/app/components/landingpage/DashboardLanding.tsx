@@ -29,7 +29,7 @@ const partners: partnerProps[] = [
 ];
 const DashboardLanding = () => {
     return (
-        <div className="flex w-1/2 overflow-hidden rounded-2xl shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_-4px_7.5px_0px_rgba(255,255,255,0.35)]">
+        <div className="hidden w-1/2 overflow-hidden rounded-2xl shadow-[0px_0px_8px_2px_#FF27BB,inset_0px_4px_7px_0px_rgba(0,0,0,0.35),inset_0px_-4px_7.5px_0px_rgba(255,255,255,0.35)] xl:flex">
             <div className="flex min-w-64 flex-col justify-start gap-4 bg-[#181818] p-6">
                 <div className="p-4 font-bold text-[#FF27BB]">
                     PARTNER ADVISOR
