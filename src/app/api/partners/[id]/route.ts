@@ -61,8 +61,8 @@ export async function GET(
 
 //update partner route
 export async function PUT(
-    req: Request,
-    { params }: { params: { id: string } },
+    request: Request,
+    { params }: { params: Promise<{ id: string }> },
 ) {
     const { id } = await params;
 
