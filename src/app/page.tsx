@@ -115,8 +115,8 @@ export default async function Page() {
                             </h3>
                             <p className="text-sm text-gray-400">
                                 Never run out of ideas. Generate custom date
-                                nights and gift ideas based on your partner's
-                                unique personality.
+                                nights and gift ideas based on your
+                                partner&apos;s unique personality.
                             </p>
                         </div>
                     </div>

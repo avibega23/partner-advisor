@@ -55,7 +55,7 @@ const Page = () => {
         >
           <Link href="./../profileData">
             <button
-              className="px-[60px] border-[#FF049B] border-[2px] py-[16px] bg-[#FF049B] rounded-lg text-[15px] font-bold cursor-pointer hover:bg-[#292929] hover:border-[#FF049B] hover:border-[2px] hover:text-white duration-500"
+              className="px-[60px] border-[#FF049B] border-2 py-4 bg-[#FF049B] rounded-lg text-[15px] font-bold cursor-pointer hover:bg-[#292929] hover:border-[#FF049B] hover:border-2 hover:text-white duration-500"
             >
               Next
             </button>

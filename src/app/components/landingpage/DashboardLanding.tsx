@@ -59,7 +59,7 @@ const DashboardLanding = () => {
                         <div className="rounded-2xl bg-[#303030] px-6 py-4">
                             How Do I Impress My Crush??
                         </div>
-                        <div className="w-full py-4">You Can't...</div>
+                        <div className="w-full py-4">You Can&apos;t...</div>
                     </div>
                     <div className="w-full px-12">
                         <div className="rounded-2xl bg-[#303030] px-6 py-4">
